@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  who: 1
+  when: 2014-04-15 08:58:10
+  where: MyString
+  what: MyString
+  author: 1
+
+two:
+  who: 1
+  when: 2014-04-15 08:58:10
+  where: MyString
+  what: MyString
+  author: 1
