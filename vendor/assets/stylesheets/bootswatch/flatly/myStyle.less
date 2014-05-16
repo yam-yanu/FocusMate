@@ -7,9 +7,102 @@ html,body{
 	height: 30%;
 	overflow-y: scroll;
 }
-
+//actionの作成者部分
 .author {
+	float:right;
 	text-align: right;
 	color: @gray;
 	font-size: @font-size-small;
+}
+
+//actionの作成者部分
+.great_info {
+	margin-top: 5px;
+	color: @gray;
+	font-size: @font-size-small;
+}
+.comment_field{
+	height: 33px;
+	padding: 6px 9px;
+	margin :8px 0 0 0;
+	font-size: 13px;
+	line-height: 1.5;
+	border-radius: 15px;
+	resize:none;
+}
+.comment_field:focus{
+	height:75px;
+}
+
+i.form-control-feedback{
+	color: @gray-light;
+	cursor: pointer;
+}
+
+i.form-control-feedback:hover{
+	color: @brand-primary;
+}
+
+.comment_field:focus + i.form-control-feedback{
+	color: @brand-primary;
+}
+
+.comment_error{
+	margin:3px 10px 3px 10px;
+	padding:3px 0 0 3px;
+	font-size: @font-size-small;
+}
+
+.alert-dismissable .close {
+	top:-4px;
+	right:5px;
+}
+
+//actionのコメント部分
+.comment-for-action{
+	padding: 0;
+}
+.comment-for-action blockquote{
+	border-left: 5px solid #18bc9c;
+	font-size: @font-size-small;
+	margin: 5px 0 0 0;
+	padding: 0 0 0 5px;
+}
+hr.style-bury {
+	margin: 5px 0 0 0;
+	border: 0;
+	height: 0;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.well{
+	padding: 10px 19px 10px 19px;
+}
+
+//== バッジ
+.well > .badge{
+	background-color: @brand-info;
+	float:right;
+}
+#new_action > .well > .badge{
+	background-color: @brand-info;
+	float:none;
+}
+
+.table > tbody > tr > td{
+	vertical-align:middle;
+}
+
+.prize_form{
+	border-radius: 12px;
+}
+
+select.datetime_form{
+	display:inline;
+	width:50px;
+}
+
+#action_act_time_1i{
+	width: 80px;
 }

@@ -1,0 +1,151 @@
+<div id="new_action" style="display:none;">
+	<div class="well"><div class="badge" >new action</div></div>
+</div>
+<%
+change_month_flag = false
+change_day_flag = false
+change_hour_flag = false
+month = -1
+day = -1
+hour = -1
+loop_count = 0
+
+@actions.each do |action|
+
+	change_month_flag = false
+	change_day_flag = false
+	change_hour_flag = false
+	if action.act_time.month != month
+		change_month_flag = true
+		month = action.act_time.month
+	end
+	if action.act_time.day != day
+		change_day_flag = true
+		day = action.act_time.day
+	end
+	if (((action.act_time.hour*60)+action.act_time.min) - hour) <= -30
+		change_hour_flag = true
+	end
+	hour = (action.act_time.hour*60) + action.act_time.min
+
+	if loop_count != 0 && (change_hour_flag == true || change_day_flag == true || change_month_flag == true)%>
+			</blockquote>
+		</ul>
+	<%end
+	if loop_count == 0 || change_month_flag == true || change_day_flag == true%>
+		<h4><%= action.act_time.in_time_zone('Tokyo').strftime('%1m月%1d日 %1H時%1M分頃')%></h4>
+		<ul>
+			<blockquote>
+	<% elsif change_hour_flag == true %>
+		<h4><%= action.act_time.in_time_zone('Tokyo').strftime('%1H時%1M分頃')%></h4>
+		<ul>
+			<blockquote>
+	<% end %>
+				<div class= "well">
+					<% if action.greats.count != 0 %>
+						<span class="badge"><%= action.greats.count %> <i class="fa fa-thumbs-o-up nav-icon"></i></span>
+					<% else %>
+						<span class="badge"></span>
+					<% end %>
+					<%= image_tag(action.who.image, :size => "37x37", :alt => "アイコン") %>
+					<%= link_to action.who.name,:controller =>"actions",:action =>"show",:id =>action.who.id %>さんが
+					<div style="text-align:center;"><%= action.where %>で</div>
+					<div style="text-align:center;"><%= action.what %>をしました.</div>
+					<div class="author">- by <%= image_tag(action.author.image, :size => "20x20", :alt => "アイコン") %><%= action.author.name %></div>
+					<% if action.greats.exists?(:user_id => current_user.id) %>
+						<div class="great_info" >すでに褒めています</div>
+					<% else %>
+						<%= button_tag(type: 'button',class: 'btn btn-info btn-xs great',style:'margin:0 10px;',:"data-user_id" => current_user.id,:"data-action_id" => action.id,:"data-great_count" => action.greats.count) do "<i class='fa fa-thumbs-o-up nav-icon'></i> すごい！".html_safe end%>
+					<% end %>
+					<div class="form-group has-feedback" style="margin-top: 0; margin-bottom: 0; padding:0;">
+						<textarea class="form-control comment_field" placeholder="コメントを残す" rows=1></textarea>
+						<i class='fa fa-edit form-control-feedback' style="top:-5px;" data-action_id=<%= action.id %> data-user_id=<%= current_user.id %>></i>
+					</div>
+					<% if action.comments.count != 0 %>
+						<hr class="style-bury" data-action_id=<%= action.id %>>
+						<div class="comment-for-action" data-action_id="<%= action.id %>">
+							<% action.comments.each do |comment| %>
+								<blockquote style="display: table;">
+									<div style="display: table-cell;">
+									<%= image_tag(comment.user.image, :size => "33x33", :alt => "アイコン", :style => "margin:2px 5px;") %>
+									</div>
+									<div style="display: table-cell;vertical-align: top;">
+										<%= link_to comment.user.name,:controller =>"actions",:action =>"show",:id =>comment.user.id %>
+										<%= comment.created_at.in_time_zone('Tokyo').strftime(' %1m月%1d日 %1H時%1M分')%>
+										<br><%= comment.comment.html_safe %>
+									</div>
+								</blockquote>
+							<% end %>
+						</div>
+					<% else %>
+						<hr class="style-bury" data-action_id=<%= action.id %> style="display: none;">
+						<div class="comment-for-action" data-action_id="<%= action.id %>"></div>
+					<% end %>
+				</div>
+	<% loop_count = loop_count + 1
+end %>
+			</blockquote>
+		</ul>
+
+<script type="text/javascript">
+// $(function(){
+// 	$("button.great").click(function() {
+// 		$.post('/actions/'+$(this).data('action_id')+'/users/'+$(this).data('user_id')+'/add_great');
+// 	});
+// });
+
+// $(function(){
+// 	$("i.form-control-feedback").click(function() {
+// 		$.post('/actions/'+$(this).data('action_id')+'/users/'+$(this).data('user_id')+'/comments/'+$(this).prev().val().replace(/[\n\r]/g, "<br>")+'/add_comment');
+// 		$(this).prev().val("");
+// 	});
+// });
+
+//「すごい！」をajaxで送信、反映する
+$(function(){
+	$("button.great").click(function() {
+		var clicked_dom = $(this);
+		$.ajax({
+			type: 'post',
+			url: '/actions/'+$(this).data('action_id')+'/users/'+$(this).data('user_id')+'/add_great',
+			success: function(){
+				var great_badge = clicked_dom.prevAll('.badge');
+				great_badge.text(Number(great_badge.text()) + 1);
+				clicked_dom.prevAll('.badge').append(' <i class="fa fa-thumbs-o-up nav-icon"></i>');
+				clicked_dom.replaceWith('<div class="great_info" >すでに褒めています</div>');
+			}
+		});
+	});
+});
+
+//コメントをajaxで送信、反映する
+$(function(){
+	$("i.form-control-feedback").click(function() {
+		var clicked_dom = $(this);
+		var comment_field = clicked_dom.prev();
+		var comment = comment_field.val().replace(/[\n\r]/g, "<br>");
+		var action_id = $(this).data('action_id');
+		if(comment == ""){
+			clicked_dom.after('<div class="alert alert-dismissable alert-danger comment_error"><button type="button" class="close" data-dismiss="alert">×</button>コメントを入力してください。</div>');
+			clicked_dom.parent("div").addClass('has-error');
+			return;
+		}
+		$.ajax({
+			type: 'post',
+			url: '/actions/'+action_id+'/users/'+clicked_dom.data('user_id')+'/comments/'+comment+'/add_comment',
+			success: function(){
+				var action = $('.comment-for-action[data-action_id="'+action_id+'"]');
+				var add_comment = '<blockquote style="display: table;"><div style="display: table-cell;"><%= image_tag(current_user.image, :size => "33x33", :alt => "アイコン", :style => "margin:2px 5px;") %></div><div style="display: table-cell;vertical-align: top;"><%= link_to current_user.name, "/path1" %><%= Time.now.in_time_zone("Tokyo").strftime(" %1m月%1d日 %1H時%1M分")%><br>'+comment+'</div></blockquote>';
+				$(action).append(add_comment);
+				comment_field.val("");
+				clicked_dom.parent("div").removeClass('has-error');
+				$('hr[data-action_id="'+action_id+'"]').css('display','block');
+			},
+			error: function(){
+				clicked_dom.parent("div").addClass('has-error');
+				clicked_dom.after('<div class="alert alert-dismissable alert-danger comment_error"><button type="button" class="close" data-dismiss="alert">×</button>通信エラー！もう少し時間をおいてお試しください。</div>');
+			}
+		});
+	});
+});
+</script>

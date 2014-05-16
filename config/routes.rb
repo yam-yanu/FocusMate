@@ -1,5 +1,15 @@
 Rails.application.routes.draw do
+  root 'actions#index'
   resources :actions
+  resource :login, :only => [:show], :controller => :login
+
+  devise_for :users, :controllers => {
+    :registrations => "users/registrations",
+    :omniauth_callbacks => "users/omniauth_callbacks"
+  }
+
+  post 'actions/:action_id/users/:user_id/add_great' => 'greats#add_great'
+  post 'actions/:action_id/users/:user_id/comments/:comment/add_comment' => 'comments#add_comment'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

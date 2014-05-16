@@ -40,3 +40,7 @@ gem 'spring',        group: :development
 gem 'simple_form'
 gem 'less-rails'
 gem 'twitter-bootstrap-rails', :git => 'https://github.com/seyhunak/twitter-bootstrap-rails.git', :branch => 'bootstrap3'
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-twitter'
+gem 'omniauth-facebook'
