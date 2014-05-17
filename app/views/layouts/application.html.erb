@@ -170,9 +170,10 @@ $(function(){
 					author: $("#action_author").val()
 					},
 			success: function(){
-				$('#prizeModal').modal('hide');
-				$("#new_action").css('display','block');
-				$("#new_action").append("<h4>○日○時○分</h4><ul><blockquote></blockquote></ul>");
+				// $('#prizeModal').modal('hide');
+				// $("#new_action").css('display','block');
+				// $("#new_action").append("<h4>○日○時○分</h4><ul><blockquote></blockquote></ul>");
+				location.reload();
 			}
 		});
 	});
