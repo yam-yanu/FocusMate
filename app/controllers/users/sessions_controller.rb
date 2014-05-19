@@ -9,4 +9,5 @@ class Users::SessionsController < Devise::SessionsController
 		super
 		# render nothing: true
 	end
+
 end

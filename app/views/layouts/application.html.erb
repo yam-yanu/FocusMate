@@ -50,7 +50,7 @@
 			<div class="navbar-collapse collapse navbar-responsive-collapse">
 
 				<ul class="nav navbar-nav">
-					<li class="active"><%= link_to '<i class="fa fa-clock-o nav-icon"></i> タイムライン'.html_safe, "/actions" %></li>
+					<li><%= link_to '<i class="fa fa-clock-o nav-icon"></i> タイムライン'.html_safe, "/actions" %></li>
 					<li><%= link_to '<i class="fa fa-smile-o nav-icon"></i> マイアクション'.html_safe,:controller =>"actions",:action =>"show",:id =>current_user.id %></li>
 					<li><%= link_to '<i class="fa fa-thumbs-o-up nav-icon"></i> ほめる'.html_safe, "#prizeModal",{'data-toggle' => 'modal'} %></li>
 				</ul>
@@ -147,6 +147,23 @@
 	</body>
 </html>
 <script type="text/javascript">
+//ナビバーの現在位置の色を変える
+$(function(){
+	//アドレスを取得
+	path = location.pathname;
+	//アドレスによってタイムライン、マイページ、他人の行動に分けてナビバーの色を変える
+	if(path.match("/actions")){
+		if(path.split("/")[2] == <%= current_user.id %>){
+			$("ul.nav li").eq(1).addClass("active");
+			return;
+		}else if(path.split("/")[2]){
+			return;
+		}
+		$("ul.nav li").eq(0).addClass("active");
+	}
+});
+
+//行動の記述をajaxで追加
 $(function(){
 	$("#prize_submit").click(function() {
 		if( $("#action_where").val() == "" || $("#action_what").val() == ""){
