@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140506042749) do
+ActiveRecord::Schema.define(version: 20140522015047) do
 
   create_table "actions", force: true do |t|
     t.integer  "who"
@@ -34,6 +34,14 @@ ActiveRecord::Schema.define(version: 20140506042749) do
   create_table "greats", force: true do |t|
     t.integer  "action_id"
     t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pageviews", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "request_page"
+    t.integer  "user_agent"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

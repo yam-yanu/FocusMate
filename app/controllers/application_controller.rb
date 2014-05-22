@@ -16,9 +16,9 @@ private
 	end
 
 	def prize_mate
-	  @action = Action.new
+		@action = Action.new
 	end
 	def get_user_list
-	  @user_list = User.all
+		@user_list = User.all
 	end
 end
