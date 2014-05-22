@@ -51,7 +51,7 @@
 
 				<ul class="nav navbar-nav">
 					<li><%= link_to '<i class="fa fa-clock-o nav-icon"></i> タイムライン'.html_safe, "/actions" %></li>
-					<li><%= link_to '<i class="fa fa-smile-o nav-icon"></i> マイアクション'.html_safe,:controller =>"actions",:action =>"show",:id =>current_user.id %></li>
+					<li><%= link_to '<i class="fa fa-smile-o nav-icon"></i> マイアクション'.html_safe,:controller =>"actions",:action =>"me" %></li>
 					<li><%= link_to '<i class="fa fa-thumbs-o-up nav-icon"></i> ほめる'.html_safe, "#prizeModal",{'data-toggle' => 'modal'} %></li>
 				</ul>
 
@@ -160,6 +160,8 @@ $(function(){
 			return;
 		}
 		$("ul.nav li").eq(0).addClass("active");
+	}else if(path.match("/mypage")){
+		$("ul.nav li").eq(1).addClass("active");
 	}
 });
 
