@@ -83,16 +83,7 @@
 							</tr>
 							<tr>
 								<td><span class="badge">WHEN</span></td>
-								<td><%= f.datetime_select :act_time,
-												{:use_month_numbers => true,
-												:minute_step => 30,
-												:start_year => Time.now.year - 1,
-												:end_year => Time.now.year,
-												:date_separator => '/',
-												:time_separator => '：',
-												:datetime_separator => '<br><br>'},
-												{:class => 'form-control input-sm prize_form datetime_form'} %>
-								</td>
+								<td><input type="text" id="action_act_time" class="datetimepicker form-control input-sm prize_form"></td>
 								<td>頃に</td>
 							</tr>
 							<tr>
@@ -147,6 +138,39 @@
 	</body>
 </html>
 <script type="text/javascript">
+$(function(){
+	var option = {
+		minDate: '-1m',
+		maxDate: '+0d',
+		showButtonPanel: false,
+		dateFormat: 'yy/mm/dd',
+		stepMinute: 10,
+		closeText: '閉じる',
+		currentText: '現在日時',
+		timeOnlyTitle: '日時を選択',
+		timeText: '時間',
+		hourText: '時',
+		minuteText: '分',
+		secondText: '秒',
+		millisecText: 'ミリ秒',
+		microsecText: 'マイクロ秒',
+		timezoneText: 'タイムゾーン',
+		prevText: '&#x3c;前',
+		nextText: '次&#x3e;',
+		monthNames: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+		monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+		dayNames: ['日曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'],
+		dayNamesShort: ['日','月','火','水','木','金','土'],
+		dayNamesMin: ['日','月','火','水','木','金','土'],
+		weekHeader: '週',
+		yearSuffix: '年'
+	};
+	$(".datetimepicker").datetimepicker(option);
+	var dateFormat = new DateFormat("yyyy/MM/dd HH:mm");
+	//現在に日時を取得
+	var abc = dateFormat.format(new Date());
+	$(".datetimepicker").val(abc);
+});
 //ナビバーの現在位置の色を変える
 $(function(){
 	//アドレスを取得
@@ -179,15 +203,11 @@ $(function(){
 			type: 'post',
 			url: '/actions',
 			data: {who : $("#action_who").val(),
-					year: $("#action_act_time_1i").val(),
-					month: $("#action_act_time_2i").val(),
-					day: $("#action_act_time_3i").val(),
-					hour: $("#action_act_time_4i").val(),
-					minutes: $("#action_act_time_5i").val(),
+					act_time: $("#action_act_time").val(),
 					where: $("#action_where").val(),
 					what: $("#action_what").val(),
 					author: $("#action_author").val()
-					},
+			},
 			success: function(){
 				// $('#prizeModal').modal('hide');
 				// $("#new_action").css('display','block');
