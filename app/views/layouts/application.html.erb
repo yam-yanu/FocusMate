@@ -103,7 +103,7 @@
 							<tr>
 								<td><span class="badge">WHAT</span></td>
 								<td><%= f.text_field :what ,:class => "form-control input-sm prize_form",:style => "display:inline;"%></td>
-								<td>をしました！</td>
+								<td>ました！</td>
 							</tr>
 						</tbody>
 					</table>
@@ -147,6 +147,9 @@
 	</body>
 </html>
 <script type="text/javascript">
+$(function(){
+	$('#datetimepicker').datetimepicker();
+});
 //ナビバーの現在位置の色を変える
 $(function(){
 	//アドレスを取得
