@@ -24,17 +24,14 @@ class ActionsController < ApplicationController
 			render nothing: true
 			user = User.find(params[:who])
 			author = User.find(params[:author])
-			datetime = DateTime.new(params[:year].to_i,params[:month].to_i,params[:day].to_i,params[:hour].to_i,params[:minutes].to_i,0) - 9.hour
-			# datetime = DateTime.new(2014,8,31,17,10,00)
-			# datetime = Time.now
-			@action = Action.new(:who => user,:act_time => datetime,:where => params[:where],:what => params[:what],:author => author)
+			@action = Action.new(:who => user,:act_time => (DateTime.parse(params[:date]+" "+params[:time])-9.hour),:where => params[:where],:what => params[:what],:author => author)
 			@action.save
 		end
 	end
 
 	private
 		def action_params
-			params.permit(:who,:year,:month,:day,:hour,:minutes,:where,:what,:author)
+			params.permit(:who,:date,:time,:where,:what,:author)
 		end
 
 		def count_pageview(request_page)

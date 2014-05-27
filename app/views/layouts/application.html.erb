@@ -83,15 +83,9 @@
 							</tr>
 							<tr>
 								<td><span class="badge">WHEN</span></td>
-								<td><%= f.datetime_select :act_time,
-												{:use_month_numbers => true,
-												:minute_step => 30,
-												:start_year => Time.now.year - 1,
-												:end_year => Time.now.year,
-												:date_separator => '/',
-												:time_separator => '：',
-												:datetime_separator => '<br><br>'},
-												{:class => 'form-control input-sm prize_form datetime_form'} %>
+								<td>
+									<input type="text" class="form-control input-sm prize_form" id="action_date" readonly="readonly"><br>
+									<input id="action_time" type="text" class="form-control input-sm prize_form">
 								</td>
 								<td>頃に</td>
 							</tr>
@@ -147,6 +141,49 @@
 	</body>
 </html>
 <script type="text/javascript">
+//褒めるの日付フォーム部をカレンダーにする+時刻フォームを操作しやすくする
+$(function () {
+	$('#action_date').datepicker({
+		format:"yyyy/mm/dd",
+		language:"ja",
+		autoclose: true,
+		startDate: "-1m",
+		endDate:Date(),
+		todayHighlight : true,
+	});
+	//フォームに今日の日付を入れる
+	$("#action_date").val(new DateFormat("yyyy/MM/dd").format(new Date()));
+	//日付フォームにフォーカスがあたった時、カレンダーを前面に出す
+	$('#action_date').on('show', function(){
+		$("div.datepicker.dropdown-menu").css("z-index","10000");
+	});
+
+	//カレンダーでの日付選択が行われたとき、timepickerを発動
+	$('#action_date').on('changeDate', function(){
+		$('#action_time').timepicker('showWidget');
+	});
+
+	$('#action_time').timepicker({
+		minuteStep:10,
+		showMeridian:false
+	});
+	//時刻フォームにフォーカスがあたった時、cssを適切に設定し直す
+	$('#action_time').on('show.timepicker', function(){
+		$(".bootstrap-timepicker-widget").css("z-index","10000");
+		$(".bootstrap-timepicker-hour").removeClass("form-control");
+		$(".bootstrap-timepicker-minute").removeClass("form-control");
+		$(".bootstrap-timepicker-hour").css("border","none");
+		$(".bootstrap-timepicker-minute").css("border","none");
+		$(".bootstrap-timepicker-widget table tbody").append('<tr id="timepicker-submit-tr"><td></td><td><i id="timepicker-submit" class="fa fa-check"></td><td></td></tr>');
+		$('#timepicker-submit-tr').on('click', function(){
+			$('#action_time').timepicker('hideWidget');
+		});
+	});
+	$('#action_time').on('hide.timepicker', function(){
+		$("#timepicker-submit-tr").remove();
+	});
+
+});
 //ナビバーの現在位置の色を変える
 $(function(){
 	//アドレスを取得
@@ -168,7 +205,7 @@ $(function(){
 //行動の記述をajaxで追加
 $(function(){
 	$("#prize_submit").click(function() {
-		if( $("#action_where").val() == "" || $("#action_what").val() == ""){
+		if( $("#action_where").val() == "" || $("#action_what").val() == "" || $("#action_date").val() == "" || $("#action_time").val() == ""){
 			alert("入力していない項目があります");
 			return;
 		}else if($("#action_who").val() == $("#action_author").val()){
@@ -179,11 +216,8 @@ $(function(){
 			type: 'post',
 			url: '/actions',
 			data: {who : $("#action_who").val(),
-					year: $("#action_act_time_1i").val(),
-					month: $("#action_act_time_2i").val(),
-					day: $("#action_act_time_3i").val(),
-					hour: $("#action_act_time_4i").val(),
-					minutes: $("#action_act_time_5i").val(),
+					date: $("#action_date").val(),
+					time: $("#action_time").val(),
 					where: $("#action_where").val(),
 					what: $("#action_what").val(),
 					author: $("#action_author").val()
