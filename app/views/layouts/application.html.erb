@@ -116,7 +116,7 @@
 					<%= image_tag(current_user.image, :size => "37x37", :alt => "アイコン") %>
 					<%= current_user.name %>さん</br>
 				</div>
-				<div class="col-md-6 col-sm-8 col-xs-12">
+				<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
 <!--					 <%= bootstrap_flash %> -->
 					<%= yield %>
 				</div>
@@ -222,11 +222,15 @@ $(function(){
 					what: $("#action_what").val(),
 					author: $("#action_author").val()
 					},
-			success: function(){
-				// $('#prizeModal').modal('hide');
-				// $("#new_action").css('display','block');
-				// $("#new_action").append("<h4>○日○時○分</h4><ul><blockquote></blockquote></ul>");
-				location.reload();
+			success: function(one_action){
+				$('#prizeModal').modal('hide');
+				$("#action_where").val("");
+				$("#action_what").val("");
+				$("#main-column").prepend(one_action);
+			},
+			error: function(){
+				alert("通信エラー！もう少し時間をおいて試してみてください。");
+				$('#prizeModal').modal('hide');
 			}
 		});
 	});

@@ -21,11 +21,17 @@ class ActionsController < ApplicationController
 	def create
 		if action_params
 			# @action = Action.new(:who => params[:who],:act_time => DateTime.new(params[:year],params[:month],params[:day],params[:hour],params[:minnutes]),:where => params[:where],:where => params[:what])
-			render nothing: true
+			#render nothing: true
 			user = User.find(params[:who])
 			author = User.find(params[:author])
 			@action = Action.new(:who => user,:act_time => (DateTime.parse(params[:date]+" "+params[:time])-9.hour),:where => params[:where],:what => params[:what],:author => author)
-			@action.save
+			if @action.save
+				respond_to do |format|
+					format.html { render :partial =>'one_action' }
+				end
+			else
+				render nothing: true
+			end
 		end
 	end
 

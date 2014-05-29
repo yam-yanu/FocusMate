@@ -103,7 +103,7 @@ end %>
 
 //「すごい！」をajaxで送信、反映する
 $(function(){
-	$("button.great").click(function() {
+	$(document).on('click','button.great',function(){
 		var clicked_dom = $(this);
 		$.ajax({
 			type: 'post',
@@ -120,7 +120,7 @@ $(function(){
 
 //コメントをajaxで送信、反映する
 $(function(){
-	$("i.form-control-feedback").click(function() {
+	$(document).on('click','i.form-control-feedback',function(){
 		var clicked_dom = $(this);
 		var comment_field = clicked_dom.prev();
 		var comment = comment_field.val().replace(/[\n\r]/g, "<br>");
