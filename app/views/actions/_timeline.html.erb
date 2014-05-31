@@ -1,6 +1,3 @@
-<div id="new_action" style="display:none;">
-	<div class="well"><div class="badge" >new action</div></div>
-</div>
 <%
 change_month_flag = false
 change_day_flag = false
@@ -41,7 +38,7 @@ loop_count = 0
 		<ul>
 			<blockquote>
 	<% end %>
-				<div class= "well">
+				<div class= "well" data-act_time="<%= action.act_time.strftime('%Y/%m/%d %H:%M')%>">
 					<% if action.greats.count != 0 %>
 						<span class="badge"><%= action.greats.count %> <i class="fa fa-thumbs-o-up nav-icon"></i></span>
 					<% else %>
@@ -86,21 +83,9 @@ loop_count = 0
 end %>
 			</blockquote>
 		</ul>
+<div id="more"></div>
 
 <script type="text/javascript">
-// $(function(){
-// 	$("button.great").click(function() {
-// 		$.post('/actions/'+$(this).data('action_id')+'/users/'+$(this).data('user_id')+'/add_great');
-// 	});
-// });
-
-// $(function(){
-// 	$("i.form-control-feedback").click(function() {
-// 		$.post('/actions/'+$(this).data('action_id')+'/users/'+$(this).data('user_id')+'/comments/'+$(this).prev().val().replace(/[\n\r]/g, "<br>")+'/add_comment');
-// 		$(this).prev().val("");
-// 	});
-// });
-
 //「すごい！」をajaxで送信、反映する
 $(function(){
 	$(document).on('click','button.great',function(){

@@ -2,7 +2,7 @@
 <h4><%= action.act_time.in_time_zone('Tokyo').strftime('%1m月%1d日 %1H時%1M分頃')%></h4>
 <ul>
 	<blockquote>
-		<div class= "well">
+		<div class= "well" data-act_time="<%= action.act_time.strftime('%Y/%m/%d %H:%M')%>">
 				<span class="badge"></span>
 				<%= image_tag(action.who.image, :size => "37x37", :alt => "アイコン") %>
 				<%= link_to action.who.name,:controller =>"actions",:action =>"show",:id =>action.who.id %>さんが

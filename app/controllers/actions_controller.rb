@@ -1,22 +1,23 @@
 class ActionsController < ApplicationController
+	before_action :get_actions, only: [:index,:show,:me]
 	def index
-		@actions = Action.order("act_time desc")
-		@comments = Comment.all
-		@action = Action.new
 		count_pageview(0)
+		add_timeline
 	end
 	def show
 		if current_user.id != params[:id].to_i
-			@actions = Action.where("who = #{params[:id]}").order("act_time desc")
+			@actions = @actions.where("who = #{params[:id]}")
 			@user = User.find(params[:id])
 			count_pageview(1)
+			add_timeline
 		else
 			redirect_to :action => 'me'
 		end
 	end
 	def me
-		@actions = Action.where("who = #{current_user.id}").order("act_time desc")
+		@actions = @actions.where("who = #{current_user.id}")
 		count_pageview(2)
+		add_timeline
 	end
 	def create
 		if action_params
@@ -39,7 +40,6 @@ class ActionsController < ApplicationController
 		def action_params
 			params.permit(:who,:date,:time,:where,:what,:author)
 		end
-
 		def count_pageview(request_page)
 			ua = request.env["HTTP_USER_AGENT"]
 			if(ua.include?('Mobile') || ua.include?('Android'))
@@ -49,4 +49,22 @@ class ActionsController < ApplicationController
 			end
 			Pageview.create(:user_id => current_user.id,:request_page => request_page,:user_agent => user_agent)
 		end
+		def get_actions
+			@actions = Action.order("act_time desc")
+		end
+		def add_timeline
+			if(params[:act_time])
+				@actions = @actions.where("act_time <= '#{Time.parse(params[:act_time])}'").order("act_time desc").limit(10).offset(1)
+				if @actions.present?
+					respond_to do |format|
+						format.html { render :partial =>'timeline' }
+					end
+				else
+					render nothing: true
+				end
+			else
+				@actions = @actions.limit(10)
+			end
+		end
+
 end

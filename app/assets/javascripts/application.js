@@ -18,4 +18,5 @@
 //= require bootstrap-datepicker.ja
 //= require bootstrap-timepicker
 //= require dateformat
+//= require jquery.lazyload
 //= require_tree .
