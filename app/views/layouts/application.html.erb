@@ -3,7 +3,7 @@
 <head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=0.65,minimum-scale=0.65, maximum-scale=0.65">
+		<meta name="viewport" content="width=device-width, initial-scale=0.65,minimum-scale=0.65, maximum-scale=0.65, minimal-ui">
 		<title><%= content_for?(:title) ? yield(:title) : "FocusMate" %></title>
 		<%= csrf_meta_tags %>
 
@@ -37,38 +37,111 @@
 		<%= javascript_include_tag "application" %>
 	</head>
 	<body>
-		<%= render '/layouts/navbar' %>
-		<div class="container">
-			<div class="row">
-				<div class="col-md-2 hidden-sm hidden-xs">
-					<%= image_tag(current_user.image, :size => "37x37", :alt => "アイコン") %>
-					<%= current_user.name %>さん</br>
-				</div>
-				<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
-<!--					 <%= bootstrap_flash %> -->
-					<%= yield %>
-				</div>
-				<div class="col-md-3 col-sm-4 hidden-xs">
-					<div class="sidebar-nav right-sidebar">
-						<h4>メイト一覧</h4>
-						<table class="table table-bordered table-hover ">
-							<tbody>
-								<% if @user_list %>
-									<% @user_list.each do |user_list| %>
-										<tr class="active">
-											<td><%= image_tag(user_list.image, :size => "28x28", :alt => "アイコン")%><%= link_to user_list.name,:controller =>"actions",:action =>"show",:id =>user_list.id %></td>
-										</tr>
-									<% end %>
-								<% end %>
-							</tbody>
-						</table>
+<!-- 		<div  id="slider" class="clearfix" style="width:100%;position:absolute;"> -->
+			<% if @isMobile == true %>
+				<%= render '/layouts/navbar_mobile' %>
+			<% else %>
+				<%= render '/layouts/navbar' %>
+			<% end %>
+			<div class="container">
+				<div class="row">
+					<!-- 左サイドバー -->
+					<div class="col-md-2 hidden-sm hidden-xs">
+						<%= image_tag(current_user.image, :size => "37x37", :alt => "アイコン") %>
+						<%= current_user.name %>さん</br>
 					</div>
-				</div>
-			</div><!--/row-->
-		</div> <!-- /container -->
+					<!-- メインカラム -->
+					<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
+	<!--					 <%= bootstrap_flash %> -->
+<!-- 						<div id="flame" style="overflow-x: hidden;">
+							<div id="slider" class="clearfix" style="width:900px;position:absolute;">
+								<div style="width: 300px;height: 300px;background-color: red;float:left;"></div>
+								<div style="width: 300px;height: 300px;background-color: green;float:left;"></div>
+								<div style="width: 300px;height: 300px;background-color: blue;float:left;"></div>
+							</div>
+						</div> -->
+						<%= yield %>
+					</div>
+					<!-- 右サイドバー -->
+					<% if @isMobile == true %>
+						<%= render '/layouts/right_bar_mobile' %>
+					<% else %>
+						<%= render '/layouts/right_bar' %>
+					<% end %>
+				</div><!--/row-->
+			</div> <!-- /container -->
 	</body>
 </html>
 <script type="text/javascript">
+//サイドバー関連（ボタンとフリック）
+$(function() {
+	var isSidebarOpen = false;
+	var screen_width = screen.width;
+	$("#showRightPush").click(function() {
+		if(isSidebarOpen == false){
+			$("#main-column").animate({left: "-60%"},{duration: 'normal',easing: 'swing'});
+			$(".navbar-mobile-top").animate({left: "-60%"},{duration: 'normal',easing: 'swing'});
+			$(".navbar-mobile-bottom").animate({left: "-60%"},{duration: 'normal',easing: 'swing'});
+			$(".right_bar_mobile").animate({left: "40%"},{duration: 'normal',easing: 'swing'});
+			isSidebarOpen = true;
+		}else{
+			$("#main-column").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
+			$(".navbar-mobile-top").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
+			$(".navbar-mobile-bottom").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
+			$(".right_bar_mobile").animate({left: "100%"},{duration: 'normal',easing: 'swing'});
+			isSidebarOpen = false;
+		}
+	});
+	$('#main-column').on({
+		/* フリック開始 */
+		'touchstart': function(e) {
+			if(!isSidebarOpen) return; //サイドバーが表示されていないときは発動しない
+			this.touchX = event.changedTouches[0].pageX; //前のタッチ座標を保持
+			this.mainX = $(this).position().left; //メインカラムの座標を保持
+			this.sidebarX = $(".right_bar_mobile").position().left; //サイドバーの座標を保持
+			this.slideX = 0; //前の瞬間から今の時点までのフリックの量を保持
+			this.all_slideX = 0; //フリック量の合計を保持
+		},
+		/* フリック中 */
+		'touchmove': function(e) {
+			if(!isSidebarOpen) return;
+			e.preventDefault(); //フリック中は縦スクロールなどをしない
+			this.slideX = event.changedTouches[0].pageX - this.touchX; //どのくらいフリックしたか計算(右フリックが＋の値)
+			if(this.all_slideX + this.slideX < 0) return; //合計フリック量を見て左フリックになるようなら抜ける
+			this.all_slideX += this.slideX;
+			this.accel = (event.changedTouches[0].pageX - this.touchX) * 3; //加速度を計算する(重み付け入り)
+			//console.log("速度：" + this.accel +" 合計フリック量：" + this.all_slideX);
+			this.touchX = event.changedTouches[0].pageX;
+			//合計フリック量を使ってそれぞれのcssを変更
+			$(this).css({left:(this.mainX + this.all_slideX)});
+			$(".navbar-mobile-top").css({left:(this.mainX + this.all_slideX)});
+			$(".navbar-mobile-bottom").css({left:(this.mainX + this.all_slideX)});
+			$(".right_bar_mobile").css({left:(this.sidebarX+this.all_slideX)});
+		},
+		/* フリック終了 */
+		'touchend': function(e) {
+			if(!isSidebarOpen) return;
+			if(this.all_slideX < 0) return;
+			this.all_slideX += this.accel;
+			this.accel = 0;
+			//加速度込みの合計フリック量によってサイドバーを隠すかそのままにしておくか決める
+			if (this.all_slideX < 160) {
+				/*処理１　サイドバーあるまま(フリック前の状態を復元)*/
+				$(this).animate({left:this.mainX},500);
+				$(".navbar-mobile-top").animate({left:this.mainX},500);
+				$(".navbar-mobile-bottom").animate({left:this.mainX},500);
+				$(".right_bar_mobile").animate({left:this.sidebarX},500);
+			}else{
+				/*処理2　全体を右に60%分ずらしてサイドバーを隠す*/
+				$(this).animate({left:"0%"},500,"linear");
+				$(".navbar-mobile-top").animate({left:"0%"},500,"linear");
+				$(".navbar-mobile-bottom").animate({left:"0%"},500,"linear");
+				$(".right_bar_mobile").animate({left:"100%"},500,"linear");
+				isSidebarOpen = false;
+			}
+		}
+	});
+});
 //褒めるの日付フォーム部をカレンダーにする+時刻フォームを操作しやすくする
 $(function () {
 	$('#action_date').datepicker({
@@ -114,19 +187,11 @@ $(function () {
 });
 //ナビバーの現在位置の色を変える
 $(function(){
-	//アドレスを取得
-	path = location.pathname;
-	//アドレスによってタイムライン、マイページ、他人の行動に分けてナビバーの色を変える
-	if(path.match("/actions")){
-		if(path.split("/")[2] == <%= current_user.id %>){
-			$("ul.nav li").eq(1).addClass("active");
-			return;
-		}else if(path.split("/")[2]){
-			return;
-		}
-		$("ul.nav li").eq(0).addClass("active");
-	}else if(path.match("/mypage")){
-		$("ul.nav li").eq(1).addClass("active");
+	if(<%= @current_location %> === false){
+		return;
+	}else{
+		$("ul.nav li").eq(<%= @current_location %>).addClass("active");
+		$(".navbar-mobile-bottom .nav-button").eq(<%= @current_location %>).addClass("active");
 	}
 });
 

@@ -1,0 +1,14 @@
+<div class="col-md-3 col-sm-4 hidden-xs">
+	<h4>メイト一覧</h4>
+	<table class="table table-bordered table-hover ">
+		<tbody>
+			<% if @user_list %>
+				<% @user_list.each do |user_list| %>
+					<tr class="active">
+						<td><%= image_tag(user_list.image, :size => "28x28", :alt => "アイコン")%><%= link_to user_list.name,:controller =>"actions",:action =>"show",:id =>user_list.id %></td>
+					</tr>
+				<% end %>
+			<% end %>
+		</tbody>
+	</table>
+</div>
