@@ -5,12 +5,23 @@
 			<% if @user_list %>
 				<% @user_list.each do |user_list| %>
 					<tr class="active">
-						<td>
-							<a href="/actions/<%= user_list.id %>">
-								<%= image_tag(user_list.image, :size => "28x28", :alt => "アイコン")%>
-								<%= user_list.name %>
-							</a>
-						</td>
+							<td>
+								<a href="/actions/<%= user_list.id %>">
+									<%= image_tag(user_list.image, :size => "38x38", :alt => "アイコン")%>
+									<%= user_list.name %>
+								</a>
+							</td>
+							<td style="text-align: right;">
+								<a href="/actions/<%= user_list.id %>">
+									<% latest_logined_at = ((Time.now - user_list.updated_at)/3600) %>
+									<% if latest_logined_at < 1 %>
+										<%= ((Time.now - user_list.updated_at)/60).to_i %>分前
+									<% elsif latest_logined_at <= 24 %>
+										<%= latest_logined_at.to_i %>時間前
+									<% end %>
+								</a>
+							</td>
+						</a>
 					</tr>
 				<% end %>
 			<% end %>

@@ -3,7 +3,7 @@
 <head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=0.65,minimum-scale=0.65, maximum-scale=0.65, minimal-ui">
+		<meta name="viewport" content="width=device-width, initial-scale=0.8,minimum-scale=0.8, maximum-scale=0.8, minimal-ui">
 		<title><%= content_for?(:title) ? yield(:title) : "FocusMate" %></title>
 		<%= csrf_meta_tags %>
 
@@ -13,6 +13,9 @@
 		<![endif]-->
 
 		<%= stylesheet_link_tag "application", :media => "all" %>
+		<% if @isMobile == true %>
+
+		<% end %>
 
 		<!-- For third-generation iPad with high-resolution Retina display: -->
 		<!-- Size should be 144 x 144 pixels -->
@@ -73,16 +76,25 @@
 	</body>
 </html>
 <script type="text/javascript">
+//モバイルの時メインカラムにclassを追加することでcssをモバイル用に対応
+<% if @isMobile == true %>
+	$(function() {
+		$("#main-column").addClass('mobile');
+	});
+<% end %>
+
 //サイドバー関連（ボタンとフリック）
 $(function() {
+	jQuery.fx.interval = 1; //jqueryアニメーションのfpsを設定
 	var isSidebarOpen = false;
-	var screen_width = screen.width;
+	var screen_width = window.innerWidth;
+	var sidebar_width = $(".right_bar_mobile").width();
 	$("#showRightPush").click(function() {
 		if(isSidebarOpen == false){
-			$("#main-column").animate({left: "-60%"},{duration: 'normal',easing: 'swing'});
-			$(".navbar-mobile-top").animate({left: "-60%"},{duration: 'normal',easing: 'swing'});
-			$(".navbar-mobile-bottom").animate({left: "-60%"},{duration: 'normal',easing: 'swing'});
-			$(".right_bar_mobile").animate({left: "40%"},{duration: 'normal',easing: 'swing'});
+			$("#main-column").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
+			$(".navbar-mobile-top").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
+			$(".navbar-mobile-bottom").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
+			$(".right_bar_mobile").animate({left: (screen_width - sidebar_width)},{duration: 'normal',easing: 'swing'});
 			isSidebarOpen = true;
 		}else{
 			$("#main-column").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
@@ -123,21 +135,21 @@ $(function() {
 			if(!isSidebarOpen) return;
 			if(this.all_slideX < 0) return;
 			this.all_slideX += this.accel;
-			this.accel = 0;
 			//加速度込みの合計フリック量によってサイドバーを隠すかそのままにしておくか決める
-			if (this.all_slideX < 160) {
+			if (this.all_slideX < (sidebar_width/2) ) {
 				/*処理１　サイドバーあるまま(フリック前の状態を復元)*/
 				$(this).animate({left:this.mainX},500);
 				$(".navbar-mobile-top").animate({left:this.mainX},500);
 				$(".navbar-mobile-bottom").animate({left:this.mainX},500);
 				$(".right_bar_mobile").animate({left:this.sidebarX},500);
 			}else{
-				/*処理2　全体を右に60%分ずらしてサイドバーを隠す*/
-				$(this).animate({left:"0%"},500,"linear");
-				$(".navbar-mobile-top").animate({left:"0%"},500,"linear");
-				$(".navbar-mobile-bottom").animate({left:"0%"},500,"linear");
-				$(".right_bar_mobile").animate({left:"100%"},500,"linear");
+				/*処理2　全体を右にずらしてサイドバーを隠す*/
+				$(this).animate({left:"0%"},(500 - this.accel*5),"linear");
+				$(".navbar-mobile-top").animate({left:"0%"},(500 - this.accel*5),"linear");
+				$(".navbar-mobile-bottom").animate({left:"0%"},(500 - this.accel*5),"linear");
+				$(".right_bar_mobile").animate({left:"100%"},(500 - this.accel*5),"linear");
 				isSidebarOpen = false;
+				this.accel = 0;
 			}
 		}
 	});
@@ -233,7 +245,7 @@ $(function(){
 $(function() {
 	var loading = false;
 	$('#more')// mainの一番下に配置
-		.lazyload({ threshold: 200 })// 200px 余裕をもって appear イベントを発行
+		.lazyload({ threshold: 400 })// 400px 余裕をもって appear イベントを発行
 		.on('appear', function () {
 			if (loading) return;// 非同期通信を抑制する
 			loading = true;

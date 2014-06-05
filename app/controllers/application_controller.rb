@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
 	before_action :prize_mate
 	before_action :mobile_check
 	before_action :current_location_check
+	before_action :update_logined_at
 
 private
 	def login_check
@@ -43,6 +44,11 @@ private
 			end
 		else
 			@current_location = false
+		end
+	end
+	def update_logined_at
+		if current_user
+			User.where("id = '#{current_user.id}'").update_all("updated_at = '#{Time.now}'")
 		end
 	end
 end
