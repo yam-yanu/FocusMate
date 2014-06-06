@@ -54,7 +54,7 @@
 					<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
 	<!--					 <%= bootstrap_flash %> -->
 						<%= yield %>
-						<div id="more"><i class="fa fa-spinner fa-spin"></i></div>
+						<div id="more"><i class="fa fa-spinner fa-spin"></i><br><br><br></div>
 					</div>
 					<!-- 右サイドバー -->
 					<% if @isMobile == true %>
@@ -247,7 +247,7 @@ $(function() {
 			}).done(function(actions){
 				if(actions == " "){
 					$("#more").css("visibility","hidden");
-					$("#more").css("margin-bottom","10px");
+					$("#more").css("font-size","10px");
 				}else{
 					$('#more').before(actions);
 					loading = false;
