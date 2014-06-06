@@ -53,14 +53,8 @@
 					<!-- メインカラム -->
 					<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
 	<!--					 <%= bootstrap_flash %> -->
-<!-- 						<div id="flame" style="overflow-x: hidden;">
-							<div id="slider" class="clearfix" style="width:900px;position:absolute;">
-								<div style="width: 300px;height: 300px;background-color: red;float:left;"></div>
-								<div style="width: 300px;height: 300px;background-color: green;float:left;"></div>
-								<div style="width: 300px;height: 300px;background-color: blue;float:left;"></div>
-							</div>
-						</div> -->
 						<%= yield %>
+						<div id="more"><i class="fa fa-spinner fa-spin"></i></div>
 					</div>
 					<!-- 右サイドバー -->
 					<% if @isMobile == true %>
@@ -250,16 +244,71 @@ $(function() {
 				type: 'get',
 				url: '<%= request.path_info %>',
 				data: {act_time: $(".well:last").data("act_time")},
-				success: function(actions){
-					//取ってきたデータが空だとそれ以降はサーバーにアクセスしない
-					if(actions != " "){
-						$('#more').before(actions);
-						loading = false;
-					}
-				},
-				error: function(){
+			}).done(function(actions){
+				if(actions == " "){
+					$("#more").css("visibility","hidden");
+					$("#more").css("margin-bottom","10px");
+				}else{
+					$('#more').before(actions);
+					loading = false;
 				}
+			}).fail(function(){
+
 			});
 		});
+});
+
+//「すごい！」をajaxで送信、反映する
+$(function(){
+	$(document).on('click','button.great',function(){
+		var clicked_dom = $(this);
+		$.ajax({
+			type: 'post',
+			url: '/actions/'+$(this).data('action_id')+'/users/'+$(this).data('user_id')+'/add_great',
+		}).done(function(){
+			var great_badge = clicked_dom.prevAll('.badge');
+			great_badge.text(Number(great_badge.text()) + 1);
+			clicked_dom.prevAll('.badge').append(' <i class="fa fa-thumbs-o-up nav-icon"></i>');
+			clicked_dom.replaceWith('<div class="great_info" >すでに褒めています</div>');
+		});
+	});
+});
+
+//コメントをajaxで送信、反映する
+$(function(){
+	var duplication_check = 0;
+	$(document).on('click','i.form-control-feedback',function(eo){
+		console.log("クリックされた"+duplication_check);
+		eo.stopPropagation();
+		var clicked_dom = $(this);
+		var comment_field = clicked_dom.prev();
+		var comment = comment_field.val().replace(/[\n\r]/g, "<br>");
+		var action_id = $(this).data('action_id');
+		if(comment == ""){
+			clicked_dom.after('<div class="alert alert-dismissable alert-danger comment_error"><button type="button" class="close" data-dismiss="alert">×</button>コメントを入力してください。</div>');
+			clicked_dom.parent("div").addClass('has-error');
+			return;
+		}
+		$.ajax({
+			type: 'post',
+			url: '/actions/'+action_id+'/users/'+clicked_dom.data('user_id')+'/comments/'+comment+'/add_comment',
+		}).done(function(){
+			duplication_check ++;
+			if(duplication_check >= 2) return;
+			var action = $('.comment-for-action[data-action_id="'+action_id+'"]');
+			var add_comment = '<blockquote style="display: table;"><div style="display: table-cell;"><%= image_tag(current_user.image, :size => "33x33", :alt => "アイコン", :style => "margin:2px 5px;") %></div><div style="display: table-cell;vertical-align: top;"><%= link_to current_user.name, "/path1" %>'+new DateFormat("M月d日 H時m分").format(new Date())+'<br>'+comment+'</div></blockquote>';
+			$(action).append(add_comment);
+			comment_field.val("");
+			clicked_dom.parent("div").removeClass('has-error');
+			$('hr[data-action_id="'+action_id+'"]').css('display','block');
+			duplication_check = 0;
+		}).fail(function(){
+			duplication_check ++;
+			if(duplication_check >= 2) return;
+			clicked_dom.parent("div").addClass('has-error');
+			clicked_dom.after('<div class="alert alert-dismissable alert-danger comment_error"><button type="button" class="close" data-dismiss="alert">×</button>通信エラー！もう少し時間をおいてお試しください。</div>');
+			duplication_check = 0;
+		});
+	});
 });
 </script>
