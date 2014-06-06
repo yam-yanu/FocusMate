@@ -239,6 +239,10 @@ $(function() {
 		.lazyload({ threshold: 400 })// 400px 余裕をもって appear イベントを発行
 		.on('appear', function () {
 			if (loading) return;// 非同期通信を抑制する
+			if (!$(".well:last").data("act_time")){ //一つも行動がない場合、なにもしない
+				$("#more").css("display","none");
+				return;
+			}
 			loading = true;
 			$.ajax({
 				type: 'get',
