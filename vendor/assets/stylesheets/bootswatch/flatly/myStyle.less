@@ -1,5 +1,9 @@
 html,body{
 	height:100%;
+	user-select:none;
+	-moz-user-select:none;
+	-webkit-user-select:none;
+	-khtml-user-select:none;
 }
 
 #main-column{
@@ -232,9 +236,32 @@ nav.navbar-mobile-top .mobile-brand i{
 }
 .right_bar{
 	position: fixed;
-	max-height:100%;
+	max-height:90%;
 	overflow-y: scroll;
 	float:right;
 	width:20%;
 	padding:0 15px 0 15px;
+}
+
+#greats_mate_list{
+	position: absolute;
+	background-color: @brand-primary;
+	color:white;
+	font-size: @font-size-base;
+	text-align: center;
+	padding: 3px 5px;
+	z-index: 1;
+	white-space: nowrap;
+}
+
+#greats_mate_list:after{
+    border:10px solid transparent;
+    border-bottom-color: @brand-primary;
+    border-top-width:0;
+    width:0;
+    top:-10px;
+    content:"";
+    display:block;
+    right:6px;
+    position:absolute;
 }

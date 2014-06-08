@@ -1,0 +1,16 @@
+<table>
+	<tbody>
+		<% if @greats %>
+			<% @greats.each do |great| %>
+				<tr class="active">
+					<td>
+						<%= image_tag(great.user.image, :size => "20x20")%>
+					</td>
+					<td>
+						<%= great.user.name %>
+					</td>
+				</tr>
+			<% end %>
+		<% end %>
+	</tbody>
+</table>

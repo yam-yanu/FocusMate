@@ -38,7 +38,7 @@ loop_count = 0
 		<ul>
 			<blockquote>
 	<% end %>
-				<div class= "well" data-act_time="<%= action.act_time.strftime('%Y/%m/%d %H:%M')%>">
+				<div class= "well" data-act_time="<%= action.act_time.strftime('%Y/%m/%d %H:%M')%>" data-action_id="<%= action.id %>">
 					<% if action.greats.count != 0 %>
 						<span class="badge"><%= action.greats.count %> <i class="fa fa-thumbs-o-up nav-icon"></i></span>
 					<% else %>

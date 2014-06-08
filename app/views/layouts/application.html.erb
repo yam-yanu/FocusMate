@@ -315,4 +315,25 @@ $(function(){
 		});
 	});
 });
+
+//すごい！がホバーされた時、ajaxでだれがすごい！したかしらべる
+$(function(){
+	$(document).on('mouseenter touchstart','.well .badge',function(){
+		var clicked_dom = $(this);
+		clicked_dom.stop(true, false).before('<div id="greats_mate_list" class="panel"><i class="fa fa-spinner fa-spin" style="font-size:25px;"></i></div>');
+		$('#greats_mate_list').css("left",(clicked_dom.position().left + 8));
+		$('#greats_mate_list').css("top",(clicked_dom.position().top+30));
+		$.ajax({
+			type: 'get',
+			url: '/greats/'+clicked_dom.parent().data('action_id'),
+		}).done(function(mate_list){
+			$("div#greats_mate_list").children().remove();
+			$('#greats_mate_list').prepend(mate_list);
+			$('#greats_mate_list').css("left","0");
+			$('#greats_mate_list').css("left",clicked_dom.position().left - $('#greats_mate_list').width() + 31);
+		});
+	}).on('mouseleave touchend','.well .badge',function(){
+		$("div#greats_mate_list").stop(true, false).remove();
+	});
+});
 </script>

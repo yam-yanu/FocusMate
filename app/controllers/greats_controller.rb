@@ -1,4 +1,18 @@
 class GreatsController < ApplicationController
+	def index
+		if(params[:action_id])
+			@greats = Great.where("action_id = '#{params[:action_id]}'").order("created_at desc")
+			if @greats.present?
+				respond_to do |format|
+					format.html { render :partial =>'index' }
+				end
+			else
+				render nothing: true
+			end
+		else
+			render nothing: true
+		end
+	end
 	def add_great
 		render nothing: true
 		# if @great = Great.find(:all, :conditions => ["action_id = ? and user_id = ?", params[:action_id], params[:user_id]])
