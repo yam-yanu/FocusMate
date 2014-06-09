@@ -318,7 +318,7 @@ $(function(){
 
 //すごい！がホバーされた時、ajaxでだれがすごい！したかしらべる
 $(function(){
-	$(document).on('mouseenter touchstart','.well .badge',function(){
+	$(document).on('mouseenter','.well .badge',function(){
 		var clicked_dom = $(this);
 		clicked_dom.stop(true, false).before('<div id="greats_mate_list" class="panel"><i class="fa fa-spinner fa-spin" style="font-size:25px;"></i></div>');
 		$('#greats_mate_list').css("left",(clicked_dom.position().left + 8));
@@ -332,8 +332,22 @@ $(function(){
 			$('#greats_mate_list').css("left","0");
 			$('#greats_mate_list').css("left",clicked_dom.position().left - $('#greats_mate_list').width() + 31);
 		});
-	}).on('mouseleave touchend','.well .badge',function(){
+	}).on('mouseleave','.well .badge',function(){
 		$("div#greats_mate_list").stop(true, false).remove();
+	}).on('click','.well .badge',function(){
+		var action_id = $(this).parent().data('action_id');
+		if(!$(this).data("toggled") || $(this).data("toggled") == "off"){
+			$.ajax({
+				type: 'get',
+				url: '/greats/'+action_id,
+			}).done(function(mate_list){
+				$('.well[data-action_id="'+action_id+'"] .great').after("<div class='greats_mate_list'>"+mate_list+"が褒めています.</div>");
+			});
+			$(this).data('toggled', 'on');
+		}else{
+			$('.well[data-action_id="'+action_id+'"] .greats_mate_list').remove();
+			$(this).data('toggled', 'off');
+		}
 	});
 });
 </script>
