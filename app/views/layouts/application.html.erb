@@ -160,6 +160,7 @@ $(function () {
 	//日付フォームにフォーカスがあたった時、カレンダーを前面に出す
 	$('#action_date').on('show', function(){
 		$("div.datepicker.dropdown-menu").css("z-index","10000");
+		$("div.datepicker.dropdown-menu").css("left",((window.innerWidth - $("div.datepicker.dropdown-menu").width())/2));
 	});
 
 	//カレンダーでの日付選択が行われたとき、timepickerを発動
@@ -334,7 +335,7 @@ $(function(){
 		});
 	}).on('mouseleave','.well .badge',function(){
 		$("div#greats_mate_list").stop(true, false).remove();
-	}).on('click','.well .badge',function(){
+	}).on('click touchstart','.well .badge',function(){
 		var action_id = $(this).parent().data('action_id');
 		if(!$(this).data("toggled") || $(this).data("toggled") == "off"){
 			$.ajax({
