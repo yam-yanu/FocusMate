@@ -26,48 +26,4 @@
 		</div><!--/row-->
 	</div> <!-- /container -->
 </nav>
-<div class="modal fade" id="prizeModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title"><i class="fa fa-thumbs-o-up nav-icon"></i> ほめる</h4>
-			</div>
-			<div class="table-responsive" style="text-align:left;">
-			<table class="modal-body table" style="width:80%; margin-left: auto; margin-right: auto;">
-				<%= form_for @action, :html => {:class => 'form-group has-feedback'} do |f| %>
-				<input type="hidden" name="author" id="action_author" value="<%= current_user.id %>">
-				<tbody>
-					<tr>
-						<td><span class="badge">WHO</span></td>
-						<td><%= f.select :who, @user_list.map{|t| [t.name, t.id]},{},{:class => 'form-control input-sm prize_form'} %></td>
-						<td>さんが</td>
-					</tr>
-					<tr>
-						<td><span class="badge">WHEN</span></td>
-						<td>
-							<input type="text" class="form-control input-sm prize_form" id="action_date" readonly="readonly"><br>
-							<input id="action_time" type="text" class="form-control input-sm prize_form" readonly="readonly">
-						</td>
-						<td>頃に</td>
-					</tr>
-					<tr>
-						<td><span class="badge">WHERE</span></td>
-						<td><%= f.text_field :where ,:class => "form-control input-sm prize_form",:style => "display:inline;"%></td>
-						<td>で</td>
-					</tr>
-					<tr>
-						<td><span class="badge">WHAT</span></td>
-						<td><%= f.text_field :what ,:class => "form-control input-sm prize_form",:style => "display:inline;"%></td>
-						<td>ました！</td>
-					</tr>
-				</tbody>
-			</table>
-			</div>
-			<div class="modal-footer">
-				<div class="btn btn-primary" id="prize_submit">すごい！</div>
-			<%end%>
-			</div>
-		</div>
-	</div>
-</div>
+<%= render '/layouts/prize_modal' %>

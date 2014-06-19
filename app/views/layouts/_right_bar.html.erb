@@ -6,7 +6,12 @@
 				<% if @user_list %>
 					<% @user_list.each do |user_list| %>
 						<tr class="active">
-							<td><%= image_tag(user_list.image, :size => "28x28", :alt => "アイコン")%><%= link_to user_list.name,:controller =>"actions",:action =>"show",:id =>user_list.id %>
+							<td><%= image_tag(user_list.image, :size => "28x28", :alt => "アイコン")%>
+								<% if user_list.id == current_user.id %>
+									<%= link_to user_list.name,:controller =>"actions",:action =>"me"%>
+								<% else %>
+									<%= link_to user_list.name,:controller =>"actions",:action =>"show",:id =>user_list.id %>
+								<% end %>
 							</td>
 							<td style="text-align: right;">
 								<% latest_logined_at = ((Time.now - user_list.updated_at)/3600) %>

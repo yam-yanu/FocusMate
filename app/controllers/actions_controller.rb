@@ -11,7 +11,7 @@ class ActionsController < ApplicationController
 			count_pageview(1)
 			add_timeline
 		else
-			redirect_to :action => 'me'
+			redirect_to :action => 'me', :act_time => params[:act_time]
 		end
 	end
 	def me
@@ -53,7 +53,7 @@ class ActionsController < ApplicationController
 			@actions = Action.order("act_time desc")
 		end
 		def add_timeline
-			if(params[:act_time])
+			if(params[:act_time])#lazyload用
 				@actions = @actions.where("act_time <= '#{Time.parse(params[:act_time])}'").order("act_time desc").limit(10).offset(1)
 				if @actions.present?
 					respond_to do |format|
@@ -62,8 +62,13 @@ class ActionsController < ApplicationController
 				else
 					render nothing: true
 				end
+			elsif request.xml_http_request?#pjax用
+				@actions = @actions.order("act_time desc").limit(10)
+				respond_to do |format|
+					format.html { render :layout => false}
+				end
 			else
-				@actions = @actions.limit(10)
+				@actions = @actions.order("act_time desc").limit(10)
 			end
 		end
 

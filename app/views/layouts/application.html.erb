@@ -37,7 +37,6 @@
 		<%= javascript_include_tag "application" %>
 	</head>
 	<body>
-<!-- 		<div  id="slider" class="clearfix" style="width:100%;position:absolute;"> -->
 			<% if @isMobile == true %>
 				<%= render '/layouts/navbar_mobile' %>
 			<% else %>
@@ -46,7 +45,7 @@
 			<div class="container">
 				<div class="row">
 					<!-- 左サイドバー -->
-					<div class="col-md-2 hidden-sm hidden-xs">
+					<div class="col-md-2 hidden-sm hidden-xs left_bar">
 						<%= image_tag(current_user.image, :size => "37x37", :alt => "アイコン") %>
 						<%= current_user.name %>さん</br>
 					</div>
@@ -54,7 +53,9 @@
 					<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
 	<!--					 <%= bootstrap_flash %> -->
 						<%= yield %>
-						<div id="more"><i class="fa fa-spinner fa-spin"></i><br><br><br></div>
+						<% if self.controller_name == "actions" || self.controller_name == "groups"%>
+							<div id="more"><i class="fa fa-spinner fa-spin"></i><br><br><br></div>
+						<% end %>
 					</div>
 					<!-- 右サイドバー -->
 					<% if @isMobile == true %>
@@ -74,121 +75,6 @@
 	});
 <% end %>
 
-//サイドバー関連（ボタンとフリック）
-$(function() {
-	jQuery.fx.interval = 1; //jqueryアニメーションのfpsを設定
-	var isSidebarOpen = false;
-	var screen_width = window.innerWidth;
-	var sidebar_width = $(".right_bar_mobile").width();
-	$("#showRightPush").click(function() {
-		if(isSidebarOpen == false){
-			$("#main-column").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
-			$(".navbar-mobile-top").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
-			$(".navbar-mobile-bottom").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
-			$(".right_bar_mobile").animate({left: (screen_width - sidebar_width)},{duration: 'normal',easing: 'swing'});
-			isSidebarOpen = true;
-		}else{
-			$("#main-column").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
-			$(".navbar-mobile-top").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
-			$(".navbar-mobile-bottom").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
-			$(".right_bar_mobile").animate({left: "100%"},{duration: 'normal',easing: 'swing'});
-			isSidebarOpen = false;
-		}
-	});
-	$('#main-column').on({
-		/* フリック開始 */
-		'touchstart': function(e) {
-			if(!isSidebarOpen) return; //サイドバーが表示されていないときは発動しない
-			this.touchX = event.changedTouches[0].pageX; //前のタッチ座標を保持
-			this.mainX = $(this).position().left; //メインカラムの座標を保持
-			this.sidebarX = $(".right_bar_mobile").position().left; //サイドバーの座標を保持
-			this.slideX = 0; //前の瞬間から今の時点までのフリックの量を保持
-			this.all_slideX = 0; //フリック量の合計を保持
-		},
-		/* フリック中 */
-		'touchmove': function(e) {
-			if(!isSidebarOpen) return;
-			e.preventDefault(); //フリック中は縦スクロールなどをしない
-			this.slideX = event.changedTouches[0].pageX - this.touchX; //どのくらいフリックしたか計算(右フリックが＋の値)
-			if(this.all_slideX + this.slideX < 0) return; //合計フリック量を見て左フリックになるようなら抜ける
-			this.all_slideX += this.slideX;
-			this.accel = (event.changedTouches[0].pageX - this.touchX) * 3; //加速度を計算する(重み付け入り)
-			//console.log("速度：" + this.accel +" 合計フリック量：" + this.all_slideX);
-			this.touchX = event.changedTouches[0].pageX;
-			//合計フリック量を使ってそれぞれのcssを変更
-			$(this).css({left:(this.mainX + this.all_slideX)});
-			$(".navbar-mobile-top").css({left:(this.mainX + this.all_slideX)});
-			$(".navbar-mobile-bottom").css({left:(this.mainX + this.all_slideX)});
-			$(".right_bar_mobile").css({left:(this.sidebarX+this.all_slideX)});
-		},
-		/* フリック終了 */
-		'touchend': function(e) {
-			if(!isSidebarOpen) return;
-			if(this.all_slideX < 0) return;
-			this.all_slideX += this.accel;
-			//加速度込みの合計フリック量によってサイドバーを隠すかそのままにしておくか決める
-			if (this.all_slideX < (sidebar_width/2) ) {
-				/*処理１　サイドバーあるまま(フリック前の状態を復元)*/
-				$(this).animate({left:this.mainX},500);
-				$(".navbar-mobile-top").animate({left:this.mainX},500);
-				$(".navbar-mobile-bottom").animate({left:this.mainX},500);
-				$(".right_bar_mobile").animate({left:this.sidebarX},500);
-			}else{
-				/*処理2　全体を右にずらしてサイドバーを隠す*/
-				$(this).animate({left:"0%"},(500 - this.accel*5),"linear");
-				$(".navbar-mobile-top").animate({left:"0%"},(500 - this.accel*5),"linear");
-				$(".navbar-mobile-bottom").animate({left:"0%"},(500 - this.accel*5),"linear");
-				$(".right_bar_mobile").animate({left:"100%"},(500 - this.accel*5),"linear");
-				isSidebarOpen = false;
-				this.accel = 0;
-			}
-		}
-	});
-});
-//褒めるの日付フォーム部をカレンダーにする+時刻フォームを操作しやすくする
-$(function () {
-	$('#action_date').datepicker({
-		format:"yyyy/mm/dd",
-		language:"ja",
-		autoclose: true,
-		startDate: "-1m",
-		endDate:Date(),
-		todayHighlight : true,
-	});
-	//フォームに今日の日付を入れる
-	$("#action_date").val(new DateFormat("yyyy/MM/dd").format(new Date()));
-	//日付フォームにフォーカスがあたった時、カレンダーを前面に出す
-	$('#action_date').on('show', function(){
-		$("div.datepicker.dropdown-menu").css("z-index","10000");
-		$("div.datepicker.dropdown-menu").css("left",((window.innerWidth - $("div.datepicker.dropdown-menu").width())/2));
-	});
-
-	//カレンダーでの日付選択が行われたとき、timepickerを発動
-	$('#action_date').on('changeDate', function(){
-		$('#action_time').timepicker('showWidget');
-	});
-
-	$('#action_time').timepicker({
-		minuteStep:10,
-		showMeridian:false
-	});
-	//時刻フォームにフォーカスがあたった時、cssを適切に設定し直す
-	$('#action_time').on('show.timepicker', function(){
-		$(".bootstrap-timepicker-widget").css("z-index","10000");
-		$(".bootstrap-timepicker-hour").removeClass("form-control");
-		$(".bootstrap-timepicker-minute").removeClass("form-control");
-		$(".bootstrap-timepicker-hour").css("border","none");
-		$(".bootstrap-timepicker-minute").css("border","none");
-		$(".bootstrap-timepicker-widget table tbody").append('<tr id="timepicker-submit-tr"><td></td><td><i id="timepicker-submit" class="fa fa-check"></td><td></td></tr>');
-		$('#timepicker-submit-tr').on('click', function(){
-			$('#action_time').timepicker('hideWidget');
-		});
-	});
-	$('#action_time').on('hide.timepicker', function(){
-		$("#timepicker-submit-tr").remove();
-	});
-
-});
 //ナビバーの現在位置の色を変える
 $(function(){
 	if(<%= @current_location %> === false){
@@ -198,167 +84,4 @@ $(function(){
 		$(".navbar-mobile-bottom .nav-button").eq(<%= @current_location %>).addClass("active");
 	}
 });
-
-//行動の記述をajaxで追加
-$(function(){
-	$("#prize_submit").click(function() {
-		if( $("#action_where").val() == "" || $("#action_what").val() == "" || $("#action_date").val() == "" || $("#action_time").val() == ""){
-			alert("入力していない項目があります");
-			return;
-		}else if($("#action_who").val() == $("#action_author").val()){
-			alert("自分のことを褒めることは出来ません");
-			return;
-		}
-		$.ajax({
-			type: 'post',
-			url: '/actions',
-			data: {who : $("#action_who").val(),
-					date: $("#action_date").val(),
-					time: $("#action_time").val(),
-					where: $("#action_where").val(),
-					what: $("#action_what").val(),
-					author: $("#action_author").val()
-					},
-			success: function(one_action){
-				$('#prizeModal').modal('hide');
-				$("#action_where").val("");
-				$("#action_what").val("");
-				$("#main-column").prepend(one_action);
-			},
-			error: function(){
-				alert("通信エラー！もう少し時間をおいて試してみてください。");
-				$('#prizeModal').modal('hide');
-			}
-		});
-	});
-});
-
-//ページの下の方に行くと続きの行動をサーバーから取ってくる
-$(function() {
-	var loading = false;
-	$('#more')// mainの一番下に配置
-		.lazyload({ threshold: 400 })// 400px 余裕をもって appear イベントを発行
-		.on('appear', function () {
-			if (loading) return;// 非同期通信を抑制する
-			if (!$(".well:last").data("act_time")){ //一つも行動がない場合、なにもしない
-				$("#more").css("display","none");
-				return;
-			}
-			loading = true;
-			$.ajax({
-				type: 'get',
-				url: '<%= request.path_info %>',
-				data: {act_time: $(".well:last").data("act_time")},
-			}).done(function(actions){
-				if(actions == " "){
-					$("#more").css("visibility","hidden");
-					$("#more").css("font-size","10px");
-				}else{
-					$('#more').before(actions);
-					loading = false;
-				}
-			}).fail(function(){
-
-			});
-		});
-});
-
-//「すごい！」をajaxで送信、反映する
-$(function(){
-	$(document).on('click','button.great',function(){
-		var clicked_dom = $(this);
-		$.ajax({
-			type: 'post',
-			url: '/actions/'+$(this).data('action_id')+'/users/'+$(this).data('user_id')+'/add_great',
-		}).done(function(){
-			var great_badge = clicked_dom.prevAll('.badge');
-			great_badge.text(Number(great_badge.text()) + 1);
-			clicked_dom.prevAll('.badge').append(' <i class="fa fa-thumbs-o-up nav-icon"></i>');
-			clicked_dom.replaceWith('<div class="great_info" >すでに褒めています</div>');
-		});
-	});
-});
-
-//コメントをajaxで送信、反映する
-$(function(){
-	var duplication_check = 0;
-	$(document).on('click','i.form-control-feedback',function(eo){
-		console.log("クリックされた"+duplication_check);
-		eo.stopPropagation();
-		var clicked_dom = $(this);
-		var comment_field = clicked_dom.prev();
-		var comment = comment_field.val().replace(/[\n\r]/g, "<br>");
-		var action_id = $(this).data('action_id');
-		if(comment == ""){
-			clicked_dom.after('<div class="alert alert-dismissable alert-danger comment_error"><button type="button" class="close" data-dismiss="alert">×</button>コメントを入力してください。</div>');
-			clicked_dom.parent("div").addClass('has-error');
-			return;
-		}
-		$.ajax({
-			type: 'post',
-			url: '/actions/'+action_id+'/users/'+clicked_dom.data('user_id')+'/comments/'+comment+'/add_comment',
-		}).done(function(){
-			duplication_check ++;
-			if(duplication_check >= 2) return;
-			var action = $('.comment-for-action[data-action_id="'+action_id+'"]');
-			var add_comment = '<blockquote style="display: table;"><div style="display: table-cell;"><%= image_tag(current_user.image, :size => "33x33", :alt => "アイコン", :style => "margin:2px 5px;") %></div><div style="display: table-cell;vertical-align: top;"><%= link_to current_user.name, "/path1" %>'+new DateFormat("M月d日 H時m分").format(new Date())+'<br>'+comment+'</div></blockquote>';
-			$(action).append(add_comment);
-			comment_field.val("");
-			clicked_dom.parent("div").removeClass('has-error');
-			$('hr[data-action_id="'+action_id+'"]').css('display','block');
-			duplication_check = 0;
-		}).fail(function(){
-			duplication_check ++;
-			if(duplication_check >= 2) return;
-			clicked_dom.parent("div").addClass('has-error');
-			clicked_dom.after('<div class="alert alert-dismissable alert-danger comment_error"><button type="button" class="close" data-dismiss="alert">×</button>通信エラー！もう少し時間をおいてお試しください。</div>');
-			duplication_check = 0;
-		});
-	});
-});
-
-//すごい！がホバーされた時、ajaxでだれがすごい！したかしらべる
-$(function(){
-	$(document).on('mouseenter','.well .badge',function(){
-		var clicked_dom = $(this);
-		clicked_dom.stop(true, false).before('<div id="greats_mate_list" class="panel"><i class="fa fa-spinner fa-spin" style="font-size:25px;"></i></div>');
-		$('#greats_mate_list').css("left",(clicked_dom.position().left + 8));
-		$('#greats_mate_list').css("top",(clicked_dom.position().top+30));
-		$.ajax({
-			type: 'get',
-			url: '/greats/'+clicked_dom.parent().data('action_id'),
-		}).done(function(mate_list){
-			$("div#greats_mate_list").children().remove();
-			$('#greats_mate_list').prepend(mate_list);
-			$('#greats_mate_list').css("left","0");
-			$('#greats_mate_list').css("left",clicked_dom.position().left - $('#greats_mate_list').width() + 31);
-		});
-	}).on('mouseleave','.well .badge',function(){
-		$("div#greats_mate_list").stop(true, false).remove();
-	}).on('click touchstart','.well .badge',function(){
-		var action_id = $(this).parent().data('action_id');
-		if(!$(this).data("toggled") || $(this).data("toggled") == "off"){
-			$.ajax({
-				type: 'get',
-				url: '/greats/'+action_id,
-			}).done(function(mate_list){
-				$('.well[data-action_id="'+action_id+'"] .great').after("<div class='greats_mate_list'>"+mate_list+"が褒めています.</div>");
-			});
-			$(this).data('toggled', 'on');
-		}else{
-			$('.well[data-action_id="'+action_id+'"] .greats_mate_list').remove();
-			$(this).data('toggled', 'off');
-		}
-	});
-});
-</script>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-51766338-1', '49.212.200.39:3000');
-  ga('send', 'pageview');
-
 </script>
