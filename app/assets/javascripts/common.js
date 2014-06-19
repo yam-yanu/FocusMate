@@ -29,7 +29,7 @@ var isSidebarOpen = false;
 var screen_width = window.innerWidth;
 var sidebar_width = $(".right_bar_mobile").width();
 //ボタンクリックでサイドバー開く
-$(document).on('click','#showRightPush',function(){
+$(document).on('click touchstart','#showRightPush',function(){
 	if(isSidebarOpen == false){
 		sidebar_open();
 	}else{
