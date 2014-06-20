@@ -1,0 +1,6 @@
+[
+<% @user_list.each_with_index do |user_list,index| %>
+	<%= "," if index != 0 %>
+	{"id":"<%= user_list.id %>","updated_at":"<%= Time.now - user_list.updated_at %>"}
+<% end %>
+]

@@ -1,6 +1,7 @@
 $(function(){
 	datetimepicker_helper();
 	more_load();
+	update_users();
 });
 //モバイル使用時,ページ遷移にアニメーションをつける
 $(document).on({
@@ -216,4 +217,42 @@ function more_load(){
 //ローディング中アイコンを表示する
 function show_loading(){
 	$("body").append('<div class=loading_spin><i class="fa fa-spinner fa-spin"></i><br>loading</div>');
+}
+
+//ユーザーリストのログイン時間を更新する
+function update_users(){
+	$.ajax({
+		type: 'get',
+		url: '/update_users',
+		dataType:'text',
+	}).done(function(users){
+		try{
+			users_json = $.parseJSON(users);
+			$.each(users_json,function(index,user){
+				var one_tr = $(".user_information[data-id='"+user.id+"']");
+				var latest_logined_at = user.updated_at/3600;
+				if(latest_logined_at < 1){
+					one_tr.children('td:last').html(parseInt(user.updated_at/60)+"分前");
+				}else if(latest_logined_at <= 24){
+					one_tr.children('td:last').html(parseInt(latest_logined_at)+"時間前");
+				}
+				if(one_tr.data("passed_time") > user.updated_at){
+					var updated_at = user.updated_at;
+					$(".user_information").each(function(){
+						if($(this).data("passed_time") > updated_at){
+							$(this).before(one_tr);
+							one_tr.css('opacity','0');
+							one_tr.animate({opacity:'1'},500);
+							return false;
+						}
+					});
+				}
+				one_tr.data("passed_time",user.updated_at);
+			});
+		}catch(e){
+			console.log(e);
+		}
+	}).fail(function(){
+	});
+	window.setTimeout("update_users()",30000);
 }

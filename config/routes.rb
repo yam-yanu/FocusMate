@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   post 'actions/:action_id/users/:user_id/comments/:comment/add_comment' => 'comments#add_comment'
   get 'greats/:action_id' => 'greats#index'
   get 'mypage' => 'actions#me'
+  get 'update_users' => 'users#update_users'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
