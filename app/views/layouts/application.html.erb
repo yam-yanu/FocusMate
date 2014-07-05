@@ -37,6 +37,7 @@
 		<%= javascript_include_tag "application" %>
 	</head>
 	<body>
+			<%= render '/layouts/group_modal' if session[:group_id] %>
 			<% if @isMobile == true %>
 				<%= render '/layouts/navbar_mobile' %>
 			<% else %>
@@ -45,10 +46,11 @@
 			<div class="container">
 				<div class="row">
 					<!-- 左サイドバー -->
-					<div class="col-md-2 hidden-sm hidden-xs left_bar">
-						<%= image_tag(current_user.image, :size => "37x37", :alt => "アイコン") %>
-						<%= current_user.name %>さん</br>
-					</div>
+					<% if @isMobile == true %>
+						<%= render '/layouts/left_bar_mobile' %>
+					<% else %>
+						<%= render '/layouts/left_bar' %>
+					<% end %>
 					<!-- メインカラム -->
 					<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
 	<!--					 <%= bootstrap_flash %> -->

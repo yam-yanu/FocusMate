@@ -50,7 +50,7 @@ class ActionsController < ApplicationController
 			Pageview.create(:user_id => current_user.id,:request_page => request_page,:user_agent => user_agent)
 		end
 		def get_actions
-			@actions = Action.order("act_time desc")
+			@actions = Action.joins(:who).where("users.group_id = #{current_user.group_id}").order("act_time desc")
 		end
 		def add_timeline
 			if(params[:act_time])#lazyload用

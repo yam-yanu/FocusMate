@@ -2,17 +2,23 @@ $(function(){
 	datetimepicker_helper();
 	more_load();
 	update_users();
+	$('#group_modal').modal();
 });
 //モバイル使用時,ページ遷移にアニメーションをつける
 $(document).on({
 	'page:fetch':function(){
 		if(!$(".mobile")[0]) return;
-		sidebar_close();
+		if(isLeftSidebarOpen){
+			isLeftSidebarOpen = !change_screen_state(CENTER_SCREEN);
+		}else if(isRightSidebarOpen){
+			isRightSidebarOpen = !change_screen_state(CENTER_SCREEN);
+		}
 		$('.mobile').animate({marginLeft:'-=' + $(window).width() + 'px',opacity:'0'},500);
 		show_loading();
 	},'page:load':function(){
 		more_load();
 		datetimepicker_helper();
+		$('#group_modal').modal();
 		if(!$(".mobile")[0]) return;
 		$('.mobile').css({display:'block',marginLeft:$(window).width(),opacity:'0'});
 		$('.mobile').animate({marginLeft:'0px',opacity:'1'},500);
@@ -26,82 +32,84 @@ $(document).on({
 
 //サイドバー関連（ボタンとフリック）
 jQuery.fx.interval = 1; //jqueryアニメーションのfpsを設定
-var isSidebarOpen = false;
-var screen_width = window.innerWidth;
-var sidebar_width = $(".right_bar_mobile").width();
+var isLeftSidebarOpen = false;
+var isRightSidebarOpen = false;
+var screen_state = 0;
+const LEFT_SCREEN = -1;
+const CENTER_SCREEN = 0;
+const RIGHT_SCREEN = 1;
 //ボタンクリックでサイドバー開く
-$(document).on('click touchstart','#showRightPush',function(){
-	if(isSidebarOpen == false){
-		sidebar_open();
+$(document).on('touchstart','#showLeftPush',function(){
+	if(isLeftSidebarOpen == false){
+		isLeftSidebarOpen = change_screen_state(LEFT_SCREEN);
 	}else{
-		sidebar_close();
+		isLeftSidebarOpen = !change_screen_state(CENTER_SCREEN);
+	}
+});
+$(document).on('touchstart','#showRightPush',function(){
+	if(isRightSidebarOpen == false){
+		isRightSidebarOpen = change_screen_state(RIGHT_SCREEN);
+	}else{
+		isRightSidebarOpen = !change_screen_state(CENTER_SCREEN);
 	}
 });
 //サイドバー開く
-function sidebar_open(){
-	var sidebar_width = $(".right_bar_mobile").width();
-	var screen_width = window.innerWidth;
-	$("#main-column").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
-	$(".navbar-mobile-top").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
-	$(".navbar-mobile-bottom").animate({left: -sidebar_width},{duration: 'normal',easing: 'swing'});
-	$(".right_bar_mobile").animate({left: (screen_width - sidebar_width)},{duration: 'normal',easing: 'swing'});
-	isSidebarOpen = true;
+function change_screen_state(next_screen_state){
+	var moving_distance = 0;
+	if(Math.abs(next_screen_state - screen_state) == 2 || (next_screen_state - screen_state) == 0){
+		return false;
+	}else if(next_screen_state == 1 || screen_state == 1){
+		moving_distance = (screen_state - next_screen_state)*$(".right_bar_mobile").width();
+	}else if(next_screen_state == -1 || screen_state == -1){
+		moving_distance = (screen_state - next_screen_state)*$(".left_bar_mobile").width();
+	}
+	$("#main-column,.navbar-mobile-top,.left_bar_mobile,.right_bar_mobile").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
+	screen_state = next_screen_state;
+	return true;
+	//$(".navbar-mobile-bottom").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
 }
-//サイドバー閉じる
-function sidebar_close(){
-	var sidebar_width = $(".right_bar_mobile").width();
-	$("#main-column").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
-	$(".navbar-mobile-top").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
-	$(".navbar-mobile-bottom").animate({left: "0%"},{duration: 'normal',easing: 'swing'});
-	$(".right_bar_mobile").animate({left: "100%"},{duration: 'normal',easing: 'swing'});
-	isSidebarOpen = false;
-}
+
 //サイドバーが開いてる時、フリックで閉じれるようにする
 $(document)
 	/* フリック開始 */
 	.on('touchstart','#main-column',function(e){
-		if(!isSidebarOpen) return; //サイドバーが表示されていないときは発動しない
+		if(!(isLeftSidebarOpen || isRightSidebarOpen)) return; //サイドバーが表示されていないときは発動しない
 		this.touchX = event.changedTouches[0].pageX; //前のタッチ座標を保持
 		this.mainX = $(this).position().left; //メインカラムの座標を保持
-		this.sidebarX = $(".right_bar_mobile").position().left; //サイドバーの座標を保持
+		if(isLeftSidebarOpen){//サイドバーの座標を保持
+			this.sidebarX = $(".left_bar_mobile").width();
+		}else if(isRightSidebarOpen){
+			this.sidebarX = $(".right_bar_mobile").width();
+		}
 		this.slideX = 0; //前の瞬間から今の時点までのフリックの量を保持
 		this.all_slideX = 0; //フリック量の合計を保持
 	/* フリック中 */
 	}).on('touchmove','#main-column',function(e){
-		if(!isSidebarOpen) return;
+		if(!(isLeftSidebarOpen || isRightSidebarOpen)) return;
 		e.preventDefault(); //フリック中は縦スクロールなどをしない
 		this.slideX = event.changedTouches[0].pageX - this.touchX; //どのくらいフリックしたか計算(右フリックが＋の値)
-		if(this.all_slideX + this.slideX < 0) return; //合計フリック量を見て左フリックになるようなら抜ける
 		this.all_slideX += this.slideX;
 		this.accel = (event.changedTouches[0].pageX - this.touchX) * 3; //加速度を計算する(重み付け入り)
-		//console.log("速度：" + this.accel +" 合計フリック量：" + this.all_slideX);
 		this.touchX = event.changedTouches[0].pageX;
 		//合計フリック量を使ってそれぞれのcssを変更
-		$(this).css({left:(this.mainX + this.all_slideX)});
-		$(".navbar-mobile-top").css({left:(this.mainX + this.all_slideX)});
-		$(".navbar-mobile-bottom").css({left:(this.mainX + this.all_slideX)});
-		$(".right_bar_mobile").css({left:(this.sidebarX+this.all_slideX)});
+		$("#main-column,.navbar-mobile-top,.left_bar_mobile,.right_bar_mobile").css({left: '+='+this.slideX+'px'});
 	/* フリック終了 */
 	}).on('touchend','#main-column',function(e){
-		if(!isSidebarOpen) return;
-		if(this.all_slideX < 0) return;
-		this.all_slideX += this.accel;
+		if(!(isLeftSidebarOpen || isRightSidebarOpen)) return;
 		//加速度込みの合計フリック量によってサイドバーを隠すかそのままにしておくか決める
-		if (this.all_slideX < (sidebar_width/2) ) {
-			/*処理１　サイドバーあるまま(フリック前の状態を復元)*/
-			$(this).animate({left:this.mainX},500);
-			$(".navbar-mobile-top").animate({left:this.mainX},500);
-			$(".navbar-mobile-bottom").animate({left:this.mainX},500);
-			$(".right_bar_mobile").animate({left:this.sidebarX},500);
+		if(isLeftSidebarOpen && (this.all_slideX + this.accel) < -($(".left_bar_mobile").width())/2){
+			moving_distance = -$(".left_bar_mobile").width() - this.all_slideX;
+			isLeftSidebarOpen = false;
+			screen_state = CENTER_SCREEN;
+		}else if(isRightSidebarOpen && (this.all_slideX + this.accel) > $(".right_bar_mobile").width()/2){
+			moving_distance = $(".right_bar_mobile").width() - this.all_slideX;
+			isRightSidebarOpen = false;
+			screen_state = CENTER_SCREEN;
 		}else{
-			/*処理2　全体を右にずらしてサイドバーを隠す*/
-			$(this).animate({left:"0%"},(500 - this.accel*5),"linear");
-			$(".navbar-mobile-top").animate({left:"0%"},(500 - this.accel*5),"linear");
-			$(".navbar-mobile-bottom").animate({left:"0%"},(500 - this.accel*5),"linear");
-			$(".right_bar_mobile").animate({left:"100%"},(500 - this.accel*5),"linear");
-			isSidebarOpen = false;
-			this.accel = 0;
+			moving_distance = -this.all_slideX;
 		}
+		$("#main-column,.navbar-mobile-top,.left_bar_mobile,.right_bar_mobile").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
+		moving_distance = 0;
 });
 
 //行動の記述をajaxで追加
@@ -125,7 +133,6 @@ $(document).on('click','#prize_submit',function(){
 				author: $("#action_author").val()
 				},
 		success: function(one_action){
-			console.log(one_action);
 			$('#prizeModal').modal('hide');
 			$("#action_where").val("");
 			$("#action_what").val("");

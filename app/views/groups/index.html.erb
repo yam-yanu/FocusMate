@@ -1,0 +1,41 @@
+<div class="group_list">
+	<h4>グループ一覧</h4>
+	<% @groups.each do |group| %>
+		<div class="one_group">
+			<% if @isMobile %>
+				<div class="mate_img" style="width: 54px;">
+					<%= image_tag(group.users[0].image, :size => "54x54", :alt => "アイコン") %>
+				</div>
+			<% else %>
+				<div class="mate_img" style="width: 111px;">
+					<% group.users.order("updated_at desc").each_with_index do |user,i| %>
+						<% if i < 4 %>
+							<%= image_tag(user.image, :size => "54x54", :alt => "アイコン") %>
+						<% else %>
+							<%= image_tag(user.image, :size => "10x10", :alt => "アイコン",:style => "display: none;") %>
+						<% end %>
+					<% end %>
+					<% if group.users.count < 4 %>
+						<% (4 - group.users.count).times do |image| %>
+							<%= image_tag("no_image.gif", :size => "54x54") %>
+						<% end %>
+					<% end %>
+				</div>
+			<% end %>
+			<div class="group_detail">
+				<span class="group_name"><%= group.name %></span><br>
+				メンバー:<%= group.users.count %>人<br>
+				<% if current_user.group_id == 0 %>
+					<div class="shortcut"><%= group.detail %></div>
+					<button type="button" class="btn btn-primary join_group" style="display: block;"><i class="fa fa-plus" style="font-size: 18px;"></i> このグループに参加</button>
+					<div style="margin-top: 8px; display: none; opacity: 0;">
+						<input class="form-control input-sm" name="password" style="display:inline;width: 50%;" type="text" placeholder="合言葉を入力しよう!" data-group_id="<%= group.id %>">
+						<button type="button" class="btn btn-primary check_pass_btn">これでOK</button>
+					</div>
+				<% else %>
+					<%= group.detail %>
+				<% end %>
+			</div>
+		</div>
+	<% end %>
+</div>

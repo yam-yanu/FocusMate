@@ -4,6 +4,7 @@ html,body{
 	-moz-user-select:none;
 	-webkit-user-select:none;
 	-khtml-user-select:none;
+	overflow-x: hidden;
 }
 
 #main-column{
@@ -179,23 +180,23 @@ nav.navbar-mobile-top .mobile-brand i{
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	background-color: rgba(236, 240, 241, 0.65);
+	background-color: rgba(236, 240, 241, 1);
 	height: 60px;
 	z-index: 1030;
 	text-align:center;
-}
-.navbar-mobile-bottom .nav-button{
-	padding: 0 10px;
-}
-.navbar-mobile-bottom i{
-	font-size: 28px;
-	padding:8px 0 0 0;
-}
-.navbar-mobile-bottom a{
-	color: @brand-primary;
-}
-.navbar-mobile-bottom .active{
-	color: @brand-success;
+	.nav-button{
+		padding: 0px;
+	}
+	i{
+		font-size: 28px;
+		padding:8px 0 0 0;
+	}
+	a{
+		color: @brand-primary;
+	}
+	.active{
+		color: @brand-success;
+	}
 }
 
 //== モバイル用の右サイドバー
@@ -251,15 +252,15 @@ nav.navbar-mobile-top .mobile-brand i{
 }
 
 #greats_mate_list:after{
-    border:10px solid transparent;
-    border-bottom-color: @brand-primary;
-    border-top-width:0;
-    width:0;
-    top:-10px;
-    content:"";
-    display:block;
-    right:6px;
-    position:absolute;
+	border:10px solid transparent;
+	border-bottom-color: @brand-primary;
+	border-top-width:0;
+	width:0;
+	top:-10px;
+	content:"";
+	display:block;
+	right:6px;
+	position:absolute;
 }
 
 .greats_mate_list{
@@ -281,4 +282,132 @@ nav.navbar-mobile-top .mobile-brand i{
 }
 .loading_spin i{
 	font-size: 40px;
+}
+
+.one_group{
+	background-color: @gray-lighter;
+	padding: 0 5px 0 5px;
+	margin-bottom: 3px;
+	display: table;
+	width: 100%;
+}
+.mate_img img{
+	margin-bottom: 2px;
+}
+.group_detail{
+	display:table-cell;
+	vertical-align: top;
+	padding: 8px 0 8px 8px;
+}
+.shortcut {
+	overflow: hidden;
+	word-break: break-all;
+	height: 19px;
+}
+.mate_img{
+	padding-top: 8px;
+	display:table-cell;
+}
+.group_detail .group_name{
+	font-size: @font-size-large;
+}
+.join_group{
+	padding: 5px 8px;
+	margin: 5px 0;
+}
+.check_pass_btn{
+	padding: 5px 8px;
+	margin: 5px 0 5px 5px;
+}
+
+#group_modal{
+	top: 30%;
+	.modal-content{
+		overflow: hidden;
+	}
+	.modal-header{
+		padding: 10px 15px 5px 10px;
+	}
+	.modal-body{
+		padding: 5px 10px 0 10px;
+	}
+	.modal-footer{
+		padding: 0 10px 10px 0;
+		float: right;
+		border-top: none;
+	}
+}
+
+.radius-large-btn{
+	border-radius: 15px;
+	padding: 0 10px;
+	margin: 3px 0 3px 0;
+	display: block;
+}
+#make_groupModal,#invite_modal{
+	.modal-header{
+		padding: 10px 10px 5px 10px;
+	}
+	.badge{
+		padding: 5px 10px;
+	}
+	.modal-footer{
+		padding: 0 10px 10px 0;
+		border: none;
+	}
+	.detail_form{
+		padding: 6px 9px;
+		margin :8px 0 0 0;
+		font-size: 13px;
+		line-height: 1.5;
+		border-radius: 15px;
+		resize:none;
+	}
+	input{
+		border-radius: 12px;
+		display: inline;
+		&[name="invite_address"]{
+			border-radius: 0 0 12px 12px;
+			margin-bottom: 8px;
+			background-color: white;
+			cursor: copy;
+		}
+	}
+	textarea[name="body"]{
+		border-radius:12px 12px 0 0;
+	}
+}
+
+a:hover{
+	text-decoration: none;
+}
+
+//== モバイル用の左サイドバー
+.left_bar_mobile{
+	width: 80%;
+	height: 100%;
+	position:fixed;
+	top:0;
+	left:-80%;
+	overflow-y: scroll;
+	background-color: @brand-primary;
+	color: white;
+	font-size: @font-size-h4;
+	table{
+		width: 100%;
+		text-align: center;
+		.btn{
+			font-size: @font-size-h4;
+			display: inline;
+		}
+		tr{
+			border-bottom: solid 1px @gray-dark;
+			&:nth-last-of-type(1){
+				border-bottom: none;
+			}
+			td{
+				padding: 5px 0 0 10px;
+			}
+		}
+	}
 }
