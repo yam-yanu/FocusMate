@@ -10,12 +10,6 @@ html,body{
 	height:100%;
 }
 //== モバイル用のメインカラム
-#main-column.mobile{
-	position: absolute;
-	top: 50px;
-	left: 0;
-	width: 100%;
-}
 #main-column.mobile ul{
 	padding:0;
 }
@@ -155,7 +149,7 @@ input#action_date,input#action_time{
 	width: 100%;
 	background-color: @brand-primary;
 	height: 50px;
-	z-index: 1030;
+	z-index: 2;
 }
 //メイト表示用のボタン部分
 nav.navbar-mobile-top > i{
@@ -187,7 +181,7 @@ nav.navbar-mobile-top .mobile-brand i{
 	width: 100%;
 	background-color: rgba(236, 240, 241, 1);
 	height: 60px;
-	z-index: 1030;
+	z-index: 2;
 	text-align:center;
 	.nav-button{
 		padding: 0px;
@@ -204,16 +198,48 @@ nav.navbar-mobile-top .mobile-brand i{
 	}
 }
 
+//== モバイル用の左サイドバー
+.left_bar_mobile{
+	width: 80%;
+	height: 100%;
+	position:fixed;
+	top: 49px;
+	left:-80%;
+	overflow-y: scroll;
+	background-color: @brand-primary;
+	color: white;
+	font-size: @font-size-h4;
+	z-index: 1;
+	table{
+		width: 100%;
+		text-align: center;
+		.btn{
+			font-size: @font-size-h4;
+			display: inline;
+		}
+		tr{
+			border-bottom: solid 1px @gray-dark;
+			&:nth-last-of-type(1){
+				border-bottom: none;
+			}
+			td{
+				padding: 5px 0 0 10px;
+			}
+		}
+	}
+}
+
 //== モバイル用の右サイドバー
 .right_bar_mobile{
 	width: 80%;
 	height: 100%;
 	background-color: @brand-primary;
 	position:fixed;
-	top:0;
+	top: 49px;
 	left:100%;
 	color:white;
 	overflow-y: scroll;
+	z-index: 1;
 }
 
 .right_bar_mobile .table > tbody > tr.active{
@@ -385,34 +411,4 @@ nav.navbar-mobile-top .mobile-brand i{
 
 a:hover{
 	text-decoration: none;
-}
-
-//== モバイル用の左サイドバー
-.left_bar_mobile{
-	width: 80%;
-	height: 100%;
-	position:fixed;
-	top:0;
-	left:-80%;
-	overflow-y: scroll;
-	background-color: @brand-primary;
-	color: white;
-	font-size: @font-size-h4;
-	table{
-		width: 100%;
-		text-align: center;
-		.btn{
-			font-size: @font-size-h4;
-			display: inline;
-		}
-		tr{
-			border-bottom: solid 1px @gray-dark;
-			&:nth-last-of-type(1){
-				border-bottom: none;
-			}
-			td{
-				padding: 5px 0 0 10px;
-			}
-		}
-	}
 }

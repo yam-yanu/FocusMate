@@ -8,11 +8,7 @@ $(function(){
 $(document).on({
 	'page:fetch':function(){
 		if(!$(".mobile")[0]) return;
-		if(isLeftSidebarOpen){
-			isLeftSidebarOpen = !change_screen_state(CENTER_SCREEN);
-		}else if(isRightSidebarOpen){
-			isRightSidebarOpen = !change_screen_state(CENTER_SCREEN);
-		}
+		change_screen_state(CENTER_SCREEN);
 		$('.mobile').animate({marginLeft:'-=' + $(window).width() + 'px',opacity:'0'},500);
 		show_loading();
 	},'page:load':function(){
@@ -32,38 +28,40 @@ $(document).on({
 
 //サイドバー関連（ボタンとフリック）
 jQuery.fx.interval = 1; //jqueryアニメーションのfpsを設定
-var isLeftSidebarOpen = false;
-var isRightSidebarOpen = false;
 var screen_state = 0;
 const LEFT_SCREEN = -1;
 const CENTER_SCREEN = 0;
 const RIGHT_SCREEN = 1;
 //ボタンクリックでサイドバー開く
 $(document).on('touchstart','#showLeftPush',function(){
-	if(isLeftSidebarOpen == false){
-		isLeftSidebarOpen = change_screen_state(LEFT_SCREEN);
+	if(screen_state != LEFT_SCREEN){
+		change_screen_state(LEFT_SCREEN);
 	}else{
-		isLeftSidebarOpen = !change_screen_state(CENTER_SCREEN);
+		change_screen_state(CENTER_SCREEN);
 	}
 });
 $(document).on('touchstart','#showRightPush',function(){
-	if(isRightSidebarOpen == false){
-		isRightSidebarOpen = change_screen_state(RIGHT_SCREEN);
+	if(screen_state != RIGHT_SCREEN){
+		change_screen_state(RIGHT_SCREEN);
 	}else{
-		isRightSidebarOpen = !change_screen_state(CENTER_SCREEN);
+		change_screen_state(CENTER_SCREEN);
 	}
 });
 //サイドバー開く
 function change_screen_state(next_screen_state){
 	var moving_distance = 0;
-	if(Math.abs(next_screen_state - screen_state) == 2 || (next_screen_state - screen_state) == 0){
+	if((next_screen_state - screen_state) == 0){
+		return false;
+	}else if(Math.abs(next_screen_state - screen_state) == 2){
+		change_screen_state(CENTER_SCREEN);
+		change_screen_state(next_screen_state);
 		return false;
 	}else if(next_screen_state == 1 || screen_state == 1){
 		moving_distance = (screen_state - next_screen_state)*$(".right_bar_mobile").width();
 	}else if(next_screen_state == -1 || screen_state == -1){
 		moving_distance = (screen_state - next_screen_state)*$(".left_bar_mobile").width();
 	}
-	$("#main-column,.navbar-mobile-top,.left_bar_mobile,.right_bar_mobile").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
+	$(".left_bar_mobile,.right_bar_mobile").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
 	screen_state = next_screen_state;
 	return true;
 	//$(".navbar-mobile-bottom").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
@@ -73,42 +71,43 @@ function change_screen_state(next_screen_state){
 $(document)
 	/* フリック開始 */
 	.on('touchstart','#main-column',function(e){
-		if(!(isLeftSidebarOpen || isRightSidebarOpen)) return; //サイドバーが表示されていないときは発動しない
+		if(screen_state == CENTER_SCREEN) return; //サイドバーが表示されていないときは発動しない
 		this.touchX = event.changedTouches[0].pageX; //前のタッチ座標を保持
 		this.mainX = $(this).position().left; //メインカラムの座標を保持
-		if(isLeftSidebarOpen){//サイドバーの座標を保持
+		if(screen_state == LEFT_SCREEN){//サイドバーの座標を保持
 			this.sidebarX = $(".left_bar_mobile").width();
-		}else if(isRightSidebarOpen){
+		}else if(screen_state == RIGHT_SCREEN){
 			this.sidebarX = $(".right_bar_mobile").width();
 		}
 		this.slideX = 0; //前の瞬間から今の時点までのフリックの量を保持
 		this.all_slideX = 0; //フリック量の合計を保持
 	/* フリック中 */
 	}).on('touchmove','#main-column',function(e){
-		if(!(isLeftSidebarOpen || isRightSidebarOpen)) return;
-		e.preventDefault(); //フリック中は縦スクロールなどをしない
 		this.slideX = event.changedTouches[0].pageX - this.touchX; //どのくらいフリックしたか計算(右フリックが＋の値)
+		if(screen_state == CENTER_SCREEN){ return; //サイドバーが表示されていないときは発動しない
+		}else if(screen_state == LEFT_SCREEN && (this.all_slideX + this.slideX) > 0){ return;
+		}else if(screen_state == RIGHT_SCREEN && (this.all_slideX + this.slideX) < 0){ return;
+		}
+		e.preventDefault(); //フリック中は縦スクロールなどをしない
 		this.all_slideX += this.slideX;
 		this.accel = (event.changedTouches[0].pageX - this.touchX) * 3; //加速度を計算する(重み付け入り)
 		this.touchX = event.changedTouches[0].pageX;
 		//合計フリック量を使ってそれぞれのcssを変更
-		$("#main-column,.navbar-mobile-top,.left_bar_mobile,.right_bar_mobile").css({left: '+='+this.slideX+'px'});
+		$(".left_bar_mobile,.right_bar_mobile").css({left: '+='+this.slideX+'px'});
 	/* フリック終了 */
 	}).on('touchend','#main-column',function(e){
-		if(!(isLeftSidebarOpen || isRightSidebarOpen)) return;
+		if(screen_state == CENTER_SCREEN) return; //サイドバーが表示されていないときは発動しない
 		//加速度込みの合計フリック量によってサイドバーを隠すかそのままにしておくか決める
-		if(isLeftSidebarOpen && (this.all_slideX + this.accel) < -($(".left_bar_mobile").width())/2){
+		if(screen_state == LEFT_SCREEN && (this.all_slideX + this.accel) < -($(".left_bar_mobile").width())/2){
 			moving_distance = -$(".left_bar_mobile").width() - this.all_slideX;
-			isLeftSidebarOpen = false;
 			screen_state = CENTER_SCREEN;
-		}else if(isRightSidebarOpen && (this.all_slideX + this.accel) > $(".right_bar_mobile").width()/2){
+		}else if(screen_state == RIGHT_SCREEN && (this.all_slideX + this.accel) > $(".right_bar_mobile").width()/2){
 			moving_distance = $(".right_bar_mobile").width() - this.all_slideX;
-			isRightSidebarOpen = false;
 			screen_state = CENTER_SCREEN;
 		}else{
 			moving_distance = -this.all_slideX;
 		}
-		$("#main-column,.navbar-mobile-top,.left_bar_mobile,.right_bar_mobile").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
+		$(".left_bar_mobile,.right_bar_mobile").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
 		moving_distance = 0;
 });
 
