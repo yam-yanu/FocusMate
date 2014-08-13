@@ -21,24 +21,27 @@ class ActionsController < ApplicationController
 	end
 	def create
 		if action_params
-			# @action = Action.new(:who => params[:who],:act_time => DateTime.new(params[:year],params[:month],params[:day],params[:hour],params[:minnutes]),:where => params[:where],:where => params[:what])
-			#render nothing: true
-			user = User.find(params[:who])
+			who = User.find(params[:who].first)
 			author = User.find(params[:author])
-			@action = Action.new(:who => user,:act_time => (DateTime.parse(params[:date]+" "+params[:time])-9.hour),:where => params[:where],:what => params[:what],:author => author)
-			if @action.save
+			#１対多で結びついてるやつは１のレコードごと引っこ抜かなエラー出る
+			@action = Action.create(:who => who,:act_time => (DateTime.parse(params[:date]+" "+params[:time])-9.hour),:where => params[:where],:what => params[:what],:author => author)
+			if @action.new_record?#保存に失敗するとtrue
+				render nothing: true
+			else
+				action_id = @action.id
+				params[:who].each do |who|
+					ActionWho.create(:action_id => action_id,:user_id => who)
+				end
 				respond_to do |format|
 					format.html { render :partial =>'one_action' }
 				end
-			else
-				render nothing: true
 			end
 		end
 	end
 
 	private
 		def action_params
-			params.permit(:who,:date,:time,:where,:what,:author)
+			params.permit({:who => []},:date,:time,:where,:what,:author)
 		end
 		def count_pageview(request_page)
 			ua = request.env["HTTP_USER_AGENT"]

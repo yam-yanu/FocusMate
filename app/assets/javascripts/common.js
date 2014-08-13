@@ -110,10 +110,56 @@ $(document)
 		$(".left_bar_mobile,.right_bar_mobile").animate({left: '+='+moving_distance+'px'},{duration: 'normal',easing: 'swing'});
 		moving_distance = 0;
 });
+//行動した人を追加
+$(document).on('click','.plus_actor',function(){
+	var select_actor = $(this).parent("td").prev("td").find(".one_select:first-child").clone();
+	var target_td = $(this).parent("td").prev("td");
+	target_td.children(".who_select").append(select_actor);
+	target_td.find(".one_select:last-child").append('<i class="fa fa-minus-circle delete_actor"></i>');
+	duplicate_actor_check();
+	//新しく追加したセレクトに適切な値をセットする
+	target_td.find(".one_select:last-child option").each(function(){
+		if(!$(this).attr("disabled")){
+			$(this).parent("select").val($(this).val());
+			$(this).attr("selected","selected");
+			console.log($(this).parent("select").val());
+			return false;
+		}
+	});
+
+	//人数分selectを出したらプラスを消す
+	if(target_td.find(".one_select").length >= target_td.children(".who_select").data("user_count")){
+		$(this).remove();
+	}
+});
+//行動した人を削除
+$(document).on('click','.delete_actor',function(){
+	//プラスが消えていたら復活させる
+	if($(".plus_actor").size() == 0){
+		$(this).closest("td").next("td").append('<i class="fa fa-plus-circle plus_actor" style="font-size: 20px; padding-left: 8px;"></i>');
+	}
+	$(this).parent(".one_select").remove();
+	duplicate_actor_check();
+});
+
+//複数人を褒めるときに行動した人が重複しないようにする
+$(document).on('change','#prize_form select',function(){
+	duplicate_actor_check();
+});
+function duplicate_actor_check(){
+	$("form#prize_form select option").removeAttr("disabled");
+	$("form#prize_form select").each(function(){
+		var checked_user_id = $(this).val();
+		if(checked_user_id){
+			$("form#prize_form select option[data-user_id="+checked_user_id+"]").attr("disabled","disabled");
+			$(this).children("option[data-user_id="+checked_user_id+"]").removeAttr("disabled");
+			console.log($(this).val());
+		}
+	});
+}
 
 //行動の記述をajaxで追加
 $(document).on('click','#prize_submit',function(){
-	console.log("fsdfasdf");
 	if( $("#action_where").val() == "" || $("#action_what").val() == "" || $("#action_date").val() == "" || $("#action_time").val() == ""){
 		alert("入力していない項目があります");
 		return;
@@ -124,13 +170,7 @@ $(document).on('click','#prize_submit',function(){
 	$.ajax({
 		type: 'post',
 		url: '/actions',
-		data: {who : $("#action_who").val(),
-				date: $("#action_date").val(),
-				time: $("#action_time").val(),
-				where: $("#action_where").val(),
-				what: $("#action_what").val(),
-				author: $("#action_author").val()
-				},
+		data: $("form#prize_form").serialize(),
 		success: function(one_action){
 			$('#prizeModal').modal('hide');
 			$("#action_where").val("");

@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :omniauthable, :recoverable,
          :registerable, :rememberable, :trackable, :validatable
   has_many :actions
+  has_many :action_whos
   has_many :comments
   has_many :greats
   belongs_to :group

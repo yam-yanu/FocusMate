@@ -10,11 +10,14 @@
 				<% else %>
 					<span class="badge"></span>
 				<% end %>
-				<%= image_tag(action.who.image, :size => "37x37", :alt => "アイコン") %>
-				<% if action.who.id == current_user.id %>
-					<%= link_to action.who.name,:controller =>"actions",:action =>"me" %>さんが
-				<% else %>
-					<%= link_to action.who.name,:controller =>"actions",:action =>"show",:id =>action.who.id %>さんが
+				<% action.action_whos.each_with_index do |who, i| %>
+					<%= image_tag(who.user.image, :size => "37x37", :alt => "アイコン") %>
+					<%= link_to who.user.name,:controller =>"actions",:action =>"show",:id => who.user.id %>
+					<% if i != (action.action_whos.count - 1) %>
+						さんと<br>
+					<% else %>
+						さんが
+					<% end %>
 				<% end %>
 				<div style="text-align:center;"><%= action.where %>で</div>
 				<div style="text-align:center;"><%= action.what %>ました.</div>
