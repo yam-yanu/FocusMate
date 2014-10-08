@@ -1,45 +1,39 @@
 <%
-change_month_flag = false
-change_day_flag = false
-change_hour_flag = false
-month = -1
-day = -1
-hour = -1
 loop_count = 0
-
+before_action_day = 0
+wdays = ["日", "月", "火", "水", "木", "金", "土"]
 @actions.each do |action|
-
-	change_month_flag = false
 	change_day_flag = false
-	change_hour_flag = false
-	if action.act_time.month != month
-		change_month_flag = true
-		month = action.act_time.month
+	datetime = action.act_time.in_time_zone('Tokyo');
+	if(loop_count != 0)
+		time_interval = before_action_day.beginning_of_day - datetime.beginning_of_day
+	else
+		time_interval = 0
 	end
-	if action.act_time.day != day
+	if(time_interval > 0)
 		change_day_flag = true
-		day = action.act_time.day
-	end
-	if (((action.act_time.hour*60)+action.act_time.min) - hour) <= -30
-		change_hour_flag = true
-	end
-	hour = (action.act_time.hour*60) + action.act_time.min
-
-	if loop_count != 0 && (change_hour_flag == true || change_day_flag == true || change_month_flag == true)%>
-			</blockquote>
+	end %>
+	<% if(loop_count == 0) %>
+		<h4><%= datetime.strftime('%Y年%1m月%1d日('+wdays[datetime.wday]+')') %></h4>
+		<ul>
+	<% elsif(change_day_flag) %>
 		</ul>
-	<%end
-	if loop_count == 0 || change_month_flag == true || change_day_flag == true%>
-		<h4><%= action.act_time.in_time_zone('Tokyo').strftime('%1m月%1d日 %1H時%1M分頃')%></h4>
+		<h4><%= datetime.strftime('%Y年%1m月%1d日('+wdays[datetime.wday]+')') %></h4>
 		<ul>
-			<blockquote>
-	<% elsif change_hour_flag == true %>
-		<h4><%= action.act_time.in_time_zone('Tokyo').strftime('%1H時%1M分頃')%></h4>
-		<ul>
-			<blockquote>
 	<% end %>
-		<%= render :partial=>"one_action", :locals=>{:action=>action} %>
-	<% loop_count = loop_count + 1
-end %>
+
+	<% if(action.action_type == 1) %>
+			<blockquote class="npc_action">
+				<h4><%= action.act_time.in_time_zone('Tokyo').strftime('%1H時%1M分頃')%></h4>
+				<%= render :partial=>"npc_one_action", :locals=>{:action=>action} %>
 			</blockquote>
+	<% else %>
+			<blockquote>
+				<h4><%= action.act_time.in_time_zone('Tokyo').strftime('%1H時%1M分頃')%></h4>
+				<%= render :partial=>"one_action", :locals=>{:action=>action} %>
+			</blockquote>
+	<% end %>
+	<% loop_count = loop_count + 1 %>
+	<% before_action_day = datetime %>
+<% end %>
 		</ul>

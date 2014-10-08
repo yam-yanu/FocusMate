@@ -9,6 +9,20 @@ html,body{
 #main-column{
 	height:100%;
 }
+
+#main-column{
+	ul > blockquote{
+		padding: 9px 21px 9px 21px;
+		margin-bottom:0;
+		&.npc_action{
+			border-left: 5px solid @brand-warning;
+		}
+		& > h4{
+			margin: 0 0 5px 0;
+		}
+	}
+}
+
 //== モバイル用のメインカラム
 #main-column.mobile ul{
 	padding:0;

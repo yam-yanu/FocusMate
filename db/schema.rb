@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140802052711) do
+ActiveRecord::Schema.define(version: 20140922013307) do
 
   create_table "action_whos", force: true do |t|
     t.integer  "action_id"
@@ -26,6 +26,15 @@ ActiveRecord::Schema.define(version: 20140802052711) do
     t.string   "where"
     t.string   "what"
     t.integer  "author"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "action_type"
+  end
+
+  create_table "approves", force: true do |t|
+    t.integer  "approve_user_id"
+    t.integer  "approved_user_id"
+    t.integer  "approve_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -13,9 +13,8 @@
 			さんが
 		<% end %>
 	<% end %>
-	<div style="text-align:center;"><%= action.where %>で</div>
-	<div style="text-align:center;"><%= action.what %>ました.</div>
-	<div class="author">- by <%= image_tag(action.author.image, :size => "20x20", :alt => "アイコン") %><%= action.author.name %></div>
+	<div style="text-align:center;"><%= action.what %></div>
+	<div class="author">- by <%= image_tag("npc.png", :size => "20x20", :alt => "アイコン") %>FocusMate</div>
 	<% if action.greats.exists?(:user_id => current_user.id) %>
 		<div class="great_info great" >すでに褒めています</div>
 	<% else %>

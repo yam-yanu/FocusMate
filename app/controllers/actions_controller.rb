@@ -31,9 +31,12 @@ class ActionsController < ApplicationController
 				action_id = @action.id
 				params[:who].each do |who|
 					ActionWho.create(:action_id => action_id,:user_id => who)
+					approve = ApprovesController.new()
+					approve.create(current_user.id,who,1)
 				end
+				@actions = Action.where("id = #{action_id}")
 				respond_to do |format|
-					format.html { render :partial =>'one_action' }
+					format.html { render :partial =>'timeline' }
 				end
 			end
 		end
