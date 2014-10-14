@@ -18,7 +18,9 @@ class User < ActiveRecord::Base
                          email:    auth.info.email,
                          password: Devise.friendly_token[0,20],
                          image:    auth.info.image,
-                         group_id: 0
+                         group_id: 0,
+                         exp: 0,
+                         level: 1
                         )
     end
     user
