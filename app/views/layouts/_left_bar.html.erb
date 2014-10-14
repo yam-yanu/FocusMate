@@ -1,0 +1,44 @@
+<% if current_user.group_id == 0 %>
+	<%= render 'layouts/make_group_modal' %>
+<% else %>
+	<%= render 'layouts/invite_modal' %>
+<% end %>
+<div class="col-md-2 hidden-sm hidden-xs">
+	<div id="left_bar" style="position: fixed">
+		<div style="display: table; margin: 10.5px 0;">
+			<div style="display: table-cell; padding-right: 10px;">
+				<%= image_tag(current_user.image, :size => "45x45", :alt => "アイコン") %>
+			</div>
+			<div style="display: table-cell; vertical-align: top;">
+				<%= current_user.name %>さん<br>
+				<% if current_user.group_id != 0 %>
+					<%= current_user.group.name %>
+				<% else %>
+					無所属
+				<% end %>
+			</div>
+		</div>
+		<% if current_user.group_id != 0 %>
+			<a href="#invite_modal" data-toggle="modal">
+				<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-group"></i> <%= current_user.group.name %>に招待</button>
+			</a>
+		<% else %>
+			<a href="#make_groupModal" data-toggle="modal">
+				<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-plus"></i> グループを作成</button>
+			</a>
+			<a href="/groups">
+				<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-search"></i> グループを探す</button>
+			</a>
+		<% end %>
+		<div>
+			<div>
+				今週、<%= approve_count(current_user.id) %>回メイトを<br>
+				褒めました.
+			</div>
+			<div>
+				今週、<%= approved_count(current_user.id) %>回メイトに<br>
+				褒められました.
+			</div>
+		</div>
+	</div>
+</div>

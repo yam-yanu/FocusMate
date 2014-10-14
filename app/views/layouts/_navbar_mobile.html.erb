@@ -1,0 +1,33 @@
+<nav class="navbar-mobile-top">
+	<span class="mobile-brand">F<i class="fa fa-search-plus"></i>cusMate</span>
+	<i class="fa fa-group" id="showRightPush"></i>
+</nav>
+<nav class="navbar-mobile-bottom">
+	<div class="container">
+		<div class="row">
+			<a href="/actions">
+				<div class="col-md-3 col-sm-3 col-xs-3 nav-button">
+					<i class="fa fa-clock-o"></i><br>
+					タイムライン
+				</div>
+			</a>
+			<a href="/mypage">
+				<div class="col-md-3 col-sm-3 col-xs-3 nav-button">
+					<i class="fa fa-smile-o"></i><br>
+					マイアクト
+				</div>
+			</a>
+			<a href="#prizeModal" data-toggle="modal">
+				<div class="col-md-3 col-sm-3 col-xs-3 nav-button">
+					<i class="fa fa-thumbs-o-up"></i><br>
+					ほめる
+				</div>
+			</a>
+			<div class="col-md-3 col-sm-3 col-xs-3 nav-button" id="showLeftPush">
+				<i class="fa fa-bars"></i><br>
+				ステータス
+			</div>
+		</div><!--/row-->
+	</div> <!-- /container -->
+</nav>
+<%= render '/layouts/prize_modal' %>

@@ -4,8 +4,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :omniauthable, :recoverable,
          :registerable, :rememberable, :trackable, :validatable
   has_many :actions
+  has_many :action_whos
   has_many :comments
   has_many :greats
+  belongs_to :group
 
   def self.find_for_facebook_oauth(auth, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid).first
@@ -15,7 +17,10 @@ class User < ActiveRecord::Base
                          uid:      auth.uid,
                          email:    auth.info.email,
                          password: Devise.friendly_token[0,20],
-                         image:    auth.info.image
+                         image:    auth.info.image,
+                         group_id: 0,
+                         exp: 0,
+                         level: 1
                         )
     end
     user

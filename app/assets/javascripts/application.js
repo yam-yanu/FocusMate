@@ -14,4 +14,9 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require turbolinks
+//= require bootstrap-datepicker
+//= require bootstrap-datepicker.ja
+//= require bootstrap-timepicker
+//= require dateformat
+//= require jquery.lazyload
 //= require_tree .

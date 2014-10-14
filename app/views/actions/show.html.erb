@@ -1,7 +1,12 @@
 <h4><%= image_tag(@user.image, :size => "28x28", :alt => "アイコン")%> <%= @user.name %>さんのページ</h4>
+<div class="new_action">
 <% if @actions.present? %>
+</div>
 	<%= render 'timeline' %>
 <% else %>
-	まだ行動が書かれていません。<br>
-	ほめるボタンから<%= @user.name %>の行動を書いてみましょう！
+	<div id="no_action_message">
+		まだ行動が書かれていません。<br>
+		ほめるボタンから<%= @user.name %>さんの行動を書いてみましょう！
+	</div>
+</div>
 <% end %>

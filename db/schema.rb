@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140522015047) do
+ActiveRecord::Schema.define(version: 20141010035402) do
+
+  create_table "action_whos", force: true do |t|
+    t.integer  "action_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "actions", force: true do |t|
     t.integer  "who"
@@ -19,6 +26,23 @@ ActiveRecord::Schema.define(version: 20140522015047) do
     t.string   "where"
     t.string   "what"
     t.integer  "author"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "action_type"
+  end
+
+  create_table "activities", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "exp"
+    t.string   "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "approves", force: true do |t|
+    t.integer  "approve_user_id"
+    t.integer  "approved_user_id"
+    t.integer  "approve_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -34,6 +58,31 @@ ActiveRecord::Schema.define(version: 20140522015047) do
   create_table "greats", force: true do |t|
     t.integer  "action_id"
     t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "groups", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "password"
+    t.string   "detail"
+    t.boolean  "game_flag"
+  end
+
+  create_table "levels", force: true do |t|
+    t.integer  "level"
+    t.integer  "required_exp"
+    t.string   "degree"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "notifications", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "level"
+    t.boolean  "read_flag"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -63,6 +112,9 @@ ActiveRecord::Schema.define(version: 20140522015047) do
     t.string   "provider",               default: "", null: false
     t.string   "name"
     t.string   "image"
+    t.integer  "group_id"
+    t.integer  "exp"
+    t.integer  "level"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

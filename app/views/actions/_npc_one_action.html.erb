@@ -1,0 +1,38 @@
+<div class= "well" data-act_time="<%= action.act_time.strftime('%Y/%m/%d %H:%M')%>" data-action_id="<%= action.id %>">
+	<% if action.greats.count != 0 %>
+		<span class="badge"><%= action.greats.count %> <i class="fa fa-thumbs-o-up nav-icon"></i></span>
+	<% else %>
+		<span class="badge"></span>
+	<% end %>
+	<% action.action_whos.each_with_index do |who, i| %>
+		<%= image_tag(who.user.image, :size => "37x37", :alt => "アイコン") %>
+		<%= link_to who.user.name,:controller =>"actions",:action =>"show",:id => who.user.id %>
+		<% if i != (action.action_whos.count - 1) %>
+			さんと<br>
+		<% else %>
+			さんが
+		<% end %>
+	<% end %>
+	<div style="text-align:center;"><%= action.what %></div>
+	<div class="author">- by <%= image_tag("npc.png", :size => "20x20", :alt => "アイコン") %>FocusMate</div>
+	<% if action.greats.exists?(:user_id => current_user.id) %>
+		<div class="great_info great" >すでに褒めています</div>
+	<% else %>
+		<%= button_tag(type: 'button',class: 'btn btn-info btn-xs great',style:'margin:0 10px;',:"data-user_id" => current_user.id,:"data-action_id" => action.id,:"data-great_count" => action.greats.count) do "<i class='fa fa-thumbs-o-up nav-icon'></i> すごい！".html_safe end%>
+	<% end %>
+	<div class="form-group has-feedback" style="margin-top: 0; margin-bottom: 0; padding:0;">
+		<textarea class="form-control comment_field" placeholder="コメントを残す" rows=1></textarea>
+		<i class='fa fa-edit form-control-feedback' style="top:-5px;" data-action_id=<%= action.id %> data-user_id=<%= current_user.id %>></i>
+	</div>
+	<% if action.comments.count != 0 %>
+		<hr class="style-bury" data-action_id=<%= action.id %>>
+		<div class="comment-for-action" data-action_id="<%= action.id %>">
+			<% action.comments.each do |comment| %>
+				<%= render :partial=>"comments/one_comment", :locals=>{:comment=>comment} %>
+			<% end %>
+		</div>
+	<% else %>
+		<hr class="style-bury" data-action_id=<%= action.id %> style="display: none;">
+		<div class="comment-for-action" data-action_id="<%= action.id %>"></div>
+	<% end %>
+</div>

@@ -3,7 +3,7 @@
 <head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-		<meta name="viewport" content="width=device-width, initial-scale=0.65,minimum-scale=0.65, maximum-scale=0.65">
+		<meta name="viewport" content="width=device-width, initial-scale=0.8,minimum-scale=0.8, maximum-scale=0.8, minimal-ui">
 		<title><%= content_for?(:title) ? yield(:title) : "FocusMate" %></title>
 		<%= csrf_meta_tags %>
 
@@ -37,164 +37,53 @@
 		<%= javascript_include_tag "application" %>
 	</head>
 	<body>
-		<div class="navbar navbar-default navbar-fixed-top">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="/actions">F<i style="font-size: 14px;" class="fa fa-search-plus"></i>cusMate</a>
-			</div>
-
-			<div class="navbar-collapse collapse navbar-responsive-collapse">
-
-				<ul class="nav navbar-nav">
-					<li><%= link_to '<i class="fa fa-clock-o nav-icon"></i> タイムライン'.html_safe, "/actions" %></li>
-					<li><%= link_to '<i class="fa fa-smile-o nav-icon"></i> マイアクション'.html_safe,:controller =>"actions",:action =>"me" %></li>
-					<li><%= link_to '<i class="fa fa-thumbs-o-up nav-icon"></i> ほめる'.html_safe, "#prizeModal",{'data-toggle' => 'modal'} %></li>
-				</ul>
-
-<!-- 				<form class="navbar-form navbar-left input-group-sm">
-					<input class="form-control col-lg-7" placeholder="Search" type="text">
-				</form> -->
-
-				<ul class="nav navbar-nav navbar-right">
-					<li><%= link_to 'ログアウト', destroy_user_session_path, method: :delete ,:style => "margin-right:10px;"%></li>
-				</ul>
-			</div>
-		</div>
-		<div class="modal fade" id="prizeModal">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title"><i class="fa fa-thumbs-o-up nav-icon"></i> ほめる</h4>
+			<%= render '/layouts/group_modal' if session[:group_id] %>
+			<% if @isMobile == true %>
+				<%= render '/layouts/navbar_mobile' %>
+			<% else %>
+				<%= render '/layouts/navbar' %>
+			<% end %>
+			<div class="container">
+				<div class="row">
+					<!-- 左サイドバー -->
+					<% if @isMobile == true %>
+						<%= render '/layouts/left_bar_mobile' %>
+					<% else %>
+						<%= render '/layouts/left_bar' %>
+					<% end %>
+					<!-- メインカラム -->
+					<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
+	<!--					 <%= bootstrap_flash %> -->
+						<%= yield %>
+						<% if self.controller_name == "actions" || self.controller_name == "groups"%>
+							<div id="more"><i class="fa fa-spinner fa-spin"></i><br><br><br></div>
+						<% end %>
 					</div>
-					<div class="table-responsive" style="text-align:left;">
-					<table class="modal-body table" style="width:80%; margin-left: auto; margin-right: auto;">
-						<%= form_for @action, :html => {:class => 'form-group has-feedback'} do |f| %>
-						<input type="hidden" name="author" id="action_author" value="<%= current_user.id %>">
-						<tbody>
-							<tr>
-								<td><span class="badge">WHO</span></td>
-								<td><%= f.select :who, @user_list.map{|t| [t.name, t.id]},{},{:class => 'form-control input-sm prize_form'} %></td>
-								<td>さんが</td>
-							</tr>
-							<tr>
-								<td><span class="badge">WHEN</span></td>
-								<td><%= f.datetime_select :act_time,
-												{:use_month_numbers => true,
-												:minute_step => 30,
-												:start_year => Time.now.year - 1,
-												:end_year => Time.now.year,
-												:date_separator => '/',
-												:time_separator => '：',
-												:datetime_separator => '<br><br>'},
-												{:class => 'form-control input-sm prize_form datetime_form'} %>
-								</td>
-								<td>頃に</td>
-							</tr>
-							<tr>
-								<td><span class="badge">WHERE</span></td>
-								<td><%= f.text_field :where ,:class => "form-control input-sm prize_form",:style => "display:inline;"%></td>
-								<td>で</td>
-							</tr>
-							<tr>
-								<td><span class="badge">WHAT</span></td>
-								<td><%= f.text_field :what ,:class => "form-control input-sm prize_form",:style => "display:inline;"%></td>
-								<td>をしました！</td>
-							</tr>
-						</tbody>
-					</table>
-					</div>
-					<div class="modal-footer">
-						<div class="btn btn-primary" id="prize_submit">すごい！</div>
-					<%end%>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="container">
-			<div class="row">
-				<div class="col-md-2 hidden-sm hidden-xs">
-					<%= image_tag(current_user.image, :size => "37x37", :alt => "アイコン") %>
-					<%= current_user.name %>さん</br>
-				</div>
-				<div class="col-md-6 col-sm-8 col-xs-12">
-<!--					 <%= bootstrap_flash %> -->
-					<%= yield %>
-				</div>
-				<div class="col-md-3 col-sm-4 hidden-xs">
-					<div class="sidebar-nav right-sidebar">
-						<h4>メイト一覧</h4>
-						<table class="table table-bordered table-hover ">
-							<tbody>
-								<% if @user_list %>
-									<% @user_list.each do |user_list| %>
-										<tr class="active">
-											<td><%= image_tag(user_list.image, :size => "28x28", :alt => "アイコン")%><%= link_to user_list.name,:controller =>"actions",:action =>"show",:id =>user_list.id %></td>
-										</tr>
-									<% end %>
-								<% end %>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div><!--/row-->
-		</div> <!-- /container -->
+					<!-- 右サイドバー -->
+					<% if @isMobile == true %>
+						<%= render '/layouts/right_bar_mobile' %>
+					<% else %>
+						<%= render '/layouts/right_bar' %>
+					<% end %>
+				</div><!--/row-->
+			</div> <!-- /container -->
 	</body>
 </html>
 <script type="text/javascript">
+//モバイルの時メインカラムにclassを追加することでcssをモバイル用に対応
+<% if @isMobile == true %>
+	$(function() {
+		$("#main-column").addClass('mobile');
+	});
+<% end %>
+
 //ナビバーの現在位置の色を変える
 $(function(){
-	//アドレスを取得
-	path = location.pathname;
-	//アドレスによってタイムライン、マイページ、他人の行動に分けてナビバーの色を変える
-	if(path.match("/actions")){
-		if(path.split("/")[2] == <%= current_user.id %>){
-			$("ul.nav li").eq(1).addClass("active");
-			return;
-		}else if(path.split("/")[2]){
-			return;
-		}
-		$("ul.nav li").eq(0).addClass("active");
-	}else if(path.match("/mypage")){
-		$("ul.nav li").eq(1).addClass("active");
+	if(<%= @current_location %> === false){
+		return;
+	}else{
+		$("ul.nav li").eq(<%= @current_location %>).addClass("active");
+		$(".navbar-mobile-bottom .nav-button").eq(<%= @current_location %>).addClass("active");
 	}
-});
-
-//行動の記述をajaxで追加
-$(function(){
-	$("#prize_submit").click(function() {
-		if( $("#action_where").val() == "" || $("#action_what").val() == ""){
-			alert("入力していない項目があります");
-			return;
-		}else if($("#action_who").val() == $("#action_author").val()){
-			alert("自分のことを褒めることは出来ません");
-			return;
-		}
-		$.ajax({
-			type: 'post',
-			url: '/actions',
-			data: {who : $("#action_who").val(),
-					year: $("#action_act_time_1i").val(),
-					month: $("#action_act_time_2i").val(),
-					day: $("#action_act_time_3i").val(),
-					hour: $("#action_act_time_4i").val(),
-					minutes: $("#action_act_time_5i").val(),
-					where: $("#action_where").val(),
-					what: $("#action_what").val(),
-					author: $("#action_author").val()
-					},
-			success: function(){
-				// $('#prizeModal').modal('hide');
-				// $("#new_action").css('display','block');
-				// $("#new_action").append("<h4>○日○時○分</h4><ul><blockquote></blockquote></ul>");
-				location.reload();
-			}
-		});
-	});
 });
 </script>

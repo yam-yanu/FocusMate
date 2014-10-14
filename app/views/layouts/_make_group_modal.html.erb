@@ -1,0 +1,40 @@
+<div class="modal fade" id="make_groupModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title"><i class="fa fa-group"></i> グループの作成</h4>
+			</div>
+			<form action="/groups" method="post">
+				<div class="table-responsive" style="text-align:left;">
+					<table class="modal-body table" style="width:80%; margin-left: auto; margin-right: auto;">
+						<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+						<tbody>
+							<tr>
+								<td><span class="badge">グループ名</span></td>
+								<td>
+									<input type="text" name="name" class="form-control input-sm prize_form" style="display:inline;" placeholder="○○大学XX研究室">
+								</td>
+							</tr>
+							<tr>
+								<td><span class="badge">合言葉</span></td>
+								<td>
+									<input type="text" name="password" class="form-control input-sm prize_form" style="display:inline;" placeholder="開けごま">
+								</td>
+							</tr>
+							<tr>
+								<td><span class="badge">詳細</span></td>
+								<td>
+									<textarea name="detail" class="form-control detail_form" placeholder="XX研究室は〜をする研究室です。" rows="2"></textarea>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<input type="submit" value="グループ作成" class="btn btn-primary">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
