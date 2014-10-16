@@ -3,7 +3,7 @@
 <% else %>
 	<%= render 'layouts/invite_modal' %>
 <% end %>
-<div class="col-md-2 hidden-sm hidden-xs">
+<div class="col-md-3 hidden-sm hidden-xs">
 	<div id="left_bar" style="position: fixed">
 		<div style="display: table; margin: 10.5px 0;">
 			<div style="display: table-cell; padding-right: 10px;">
@@ -30,15 +30,30 @@
 				<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-search"></i> グループを探す</button>
 			</a>
 		<% end %>
-		<div>
-			<div>
-				今週、<%= approve_count(current_user.id) %>回メイトを<br>
-				褒めました.
-			</div>
-			<div>
-				今週、<%= approved_count(current_user.id) %>回メイトに<br>
-				褒められました.
+		ステータス<br>
+		レベル:<%= current_user.level.level %><br>
+		称号:<%= current_user.level.degree %><br>
+		<% required_exp(current_user.id) %>
+		EXP:あと<%= @exp["require"] %>でレベルアップ！<br>
+		<div class="progress">
+			<div class="progress-bar progress-bar-success" style="width: <%= @exp["gauge"] %>%">
+				<% if @exp["present"] != 0 %>
+					<%= @exp["present"] %>EXP
+				<% end %>
 			</div>
 		</div>
+		今週の褒め<br>
+		<div>
+			<div>
+				<%= approve_count(current_user.id) %>回メイトを褒めました.
+			</div>
+			<div>
+				<%= approved_count(current_user.id) %>回メイトに褒められました.
+			</div>
+		</div>
+		アクティビティ<br>
+
+
+
 	</div>
 </div>

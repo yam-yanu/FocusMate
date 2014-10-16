@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
 	before_action :mobile_check
 	before_action :current_location_check
 	before_action :update_logined_at
+	before_action :get_activity_list
 
 def destroy_session_group_id
 	session[:group_id] = nil
