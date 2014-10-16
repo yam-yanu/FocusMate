@@ -21,9 +21,8 @@ class GreatsController < ApplicationController
 		if Great.exists?(:action_id => params[:action_id],:user_id => params[:user_id])
 		else
 			Great.create(great_params)
-			approve = ApprovesController.new()
 			ActionWho.where("action_id = #{params[:action_id]}").find_each do |who|
-				approve.create(current_user.id,who.user_id,3)
+				Approve.data_create(current_user.id,who.user_id,3)
 			end
 		end
 	end

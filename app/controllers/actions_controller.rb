@@ -28,11 +28,12 @@ class ActionsController < ApplicationController
 			if @action.new_record?#保存に失敗するとtrue
 				render nothing: true
 			else
+				Activity.plus_exp(current_user.id,5,"ほめました")
 				action_id = @action.id
 				params[:who].each do |who|
 					ActionWho.create(:action_id => action_id,:user_id => who)
-					approve = ApprovesController.new()
-					approve.create(current_user.id,who,1)
+					Approve.data_create(current_user.id,who,1)
+					Activity.plus_exp(who,3,"褒められました")
 				end
 				@actions = Action.where("id = #{action_id}")
 				respond_to do |format|

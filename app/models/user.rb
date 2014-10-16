@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_many :comments
   has_many :greats
   belongs_to :group
+  belongs_to :level, :class_name => 'Level', :foreign_key => 'level'
 
   def self.find_for_facebook_oauth(auth, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid).first
