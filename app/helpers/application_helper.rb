@@ -21,7 +21,7 @@ module ApplicationHelper
 		# 現在の経験値
 		@exp["present"] = user.exp - present_level.required_exp
 		# レベルアップに必要な経験値
-		@exp["next"] = Level.find_by(:level => (present_level.level + 1)).required_exp - user.exp
+		@exp["next"] = Level.find_by(:level => (present_level.level + 1)).required_exp - present_level.required_exp
 		#経験値メーター
 		@exp["gauge"] = (@exp["present"].to_f / @exp["next"].to_f)*100
 		#残り経験値

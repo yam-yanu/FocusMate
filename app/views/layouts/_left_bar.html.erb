@@ -1,10 +1,5 @@
-<% if current_user.group_id == 0 %>
-	<%= render 'layouts/make_group_modal' %>
-<% else %>
-	<%= render 'layouts/invite_modal' %>
-<% end %>
 <div class="col-md-3 hidden-sm hidden-xs">
-	<div id="left_bar" style="position: fixed">
+	<div id="left_bar" style="position: fixed;width:215px;">
 		<div style="display: table; margin: 10.5px 0;">
 			<div style="display: table-cell; padding-right: 10px;">
 				<%= image_tag(current_user.image, :size => "45x45", :alt => "アイコン") %>
@@ -18,40 +13,46 @@
 				<% end %>
 			</div>
 		</div>
-		<% if current_user.group_id != 0 %>
-			<a href="#invite_modal" data-toggle="modal">
-				<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-group"></i> <%= current_user.group.name %>に招待</button>
-			</a>
-		<% else %>
-			<a href="#make_groupModal" data-toggle="modal">
-				<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-plus"></i> グループを作成</button>
-			</a>
-			<a href="/groups">
-				<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-search"></i> グループを探す</button>
-			</a>
-		<% end %>
-		ステータス<br>
-		レベル:<%= current_user.level.level %><br>
-		称号:<%= current_user.level.degree %><br>
-		<% required_exp(current_user.id) %>
-		EXP:あと<%= @exp["require"] %>でレベルアップ！<br>
-		<div class="progress">
-			<div class="progress-bar progress-bar-success" style="width: <%= @exp["gauge"] %>%">
-				<% if @exp["present"] != 0 %>
-					<%= @exp["present"] %>EXP
-				<% end %>
+		<div class="status">
+			<div class="title"><i class="fa fa-signal"></i> ステータス</div>
+			<div class="content">
+				レベル:<%= current_user.level.level %><br>
+				称号:<%= current_user.level.degree %><br>
+				<% required_exp(current_user.id) %>
+				EXP:あと<%= @exp["require"] %>EXPでLevel Up！<br>
+				<div class="progress">
+					<div class="progress-bar progress-bar-success" style="width: <%= @exp["gauge"] %>%">
+						<% if @exp["present"] != 0 %>
+							<%= @exp["present"] %>EXP
+						<% end %>
+					</div>
+				</div>
 			</div>
 		</div>
-		今週の褒め<br>
-		<div>
-			<div>
-				<%= approve_count(current_user.id) %>回メイトを褒めました.
-			</div>
-			<div>
+		<div class="number_of_approve">
+			<div class="title"><i class="fa fa-heart"></i> 今週の褒め</div>
+			<div class="content">
+				<%= approve_count(current_user.id) %>回メイトを褒めました.<br>
 				<%= approved_count(current_user.id) %>回メイトに褒められました.
 			</div>
 		</div>
-		アクティビティ<br>
+		<div class="activity">
+			<div class="title"><i class="fa fa-paw"></i> アクティビティ</div>
+			<div class="content">
+				<% @activities.each do |activity| %>
+					<div class="one_activity">
+						<div>
+							<%= image_tag(activity.user.image, :size => "28x28", :alt => "アイコン", :style => "margin:2px 5px;") %>
+						</div>
+						<div class="activity_content">
+							<%= activity.user.name %>さんが<br>
+							<%= activity.content %><br>
+							＋<%= activity.exp if activity.exp > 0%>exp
+						</div>
+					</div>
+			<% end %>
+			</div>
+		</div>
 
 
 

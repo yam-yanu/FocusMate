@@ -34,6 +34,55 @@ html,body{
 			line-height: 12px;
 		}
 	}
+	.title{
+		color: @gray-dark;
+		margin: 3px 0;
+		.fa{
+			color:@brand-primary;
+		}
+	}
+	.content{
+		padding-left: 0.7em;
+		width:100%;
+		&:last-child{
+			border:none;
+		}
+		.one_activity{
+			width:100%;
+			padding:8px 0;
+			display:table;
+			border-bottom: solid 1px @gray;
+			div{
+				display: table-cell;
+			}
+			.activity_content{
+				line-height: 1em;
+				vertical-align: top;
+				word-break: break-all;
+			}
+		}
+	}
+	.progress{
+		margin: 5px 0;
+	}
+	& > div{
+		margin: 10px 0;
+	}
+}
+
+#right_bar{
+	position: fixed;
+	max-height:90%;
+	overflow-y: scroll;
+	float:right;
+	width:20%;
+	padding:0 15px 0 15px;
+	& > .table{
+		margin-bottom: 10px;
+	}
+	.group-btn{
+		margin:10px auto;
+	}
 }
 
 //== モバイル用のメインカラム
@@ -295,14 +344,6 @@ nav.navbar-mobile-top .mobile-brand i{
 #more{
 	font-size: 30px;
 	text-align: center;
-}
-.right_bar{
-	position: fixed;
-	max-height:90%;
-	overflow-y: scroll;
-	float:right;
-	width:20%;
-	padding:0 15px 0 15px;
 }
 
 #greats_mate_list{

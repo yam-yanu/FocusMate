@@ -10,6 +10,7 @@ class Level < ActiveRecord::Base
 		if user.exp >= required_exp
 			User.where("id = #{user.id}").update_all("level = level + 1")
 			Notification.create(:user_id => user.id,:level =>user.level.level,:read_flag => 0)
+			Activity.plus_exp(user.id,0,"レベルアップしました")
 			Level.check(user.id)
 		end
 	end

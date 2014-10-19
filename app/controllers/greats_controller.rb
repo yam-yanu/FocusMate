@@ -23,6 +23,7 @@ class GreatsController < ApplicationController
 			Great.create(great_params)
 			ActionWho.where("action_id = #{params[:action_id]}").find_each do |who|
 				Approve.data_create(current_user.id,who.user_id,3)
+				Activity.plus_exp(current_user.id,1,"すごい！しました")
 			end
 		end
 	end

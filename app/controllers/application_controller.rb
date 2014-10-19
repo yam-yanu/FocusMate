@@ -71,7 +71,15 @@ private
 	end
 	def update_logined_at
 		if current_user
+			user = User.find_by id: current_user.id
+			if Time.now.in_time_zone('Tokyo').beginning_of_day - user.updated_at.in_time_zone('Tokyo').beginning_of_day > 0
+				Activity.plus_exp(current_user.id,1,"ログインしました")
+			end
 			User.where("id = '#{current_user.id}'").update_all("updated_at = '#{Time.now}'")
 		end
+	end
+
+	def get_activity_list
+		@activities = Activity.joins("LEFT JOIN users ON activities.user_id = users.id").where("group_id = #{current_user.group_id}").order("created_at desc").limit(10)
 	end
 end

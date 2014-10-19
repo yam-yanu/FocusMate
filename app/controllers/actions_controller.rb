@@ -28,7 +28,7 @@ class ActionsController < ApplicationController
 			if @action.new_record?#保存に失敗するとtrue
 				render nothing: true
 			else
-				Activity.plus_exp(current_user.id,5,"ほめました")
+				Activity.plus_exp(current_user.id,5,"褒めました")
 				action_id = @action.id
 				params[:who].each do |who|
 					ActionWho.create(:action_id => action_id,:user_id => who)
