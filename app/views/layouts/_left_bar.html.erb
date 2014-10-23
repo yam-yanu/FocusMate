@@ -47,7 +47,7 @@
 						<div class="activity_content">
 							<%= activity.user.name %>さんが<br>
 							<%= activity.content %><br>
-							＋<%= activity.exp if activity.exp > 0%>exp
+							<%= "+#{activity.exp}EXP" if activity.exp > 0 %>
 						</div>
 					</div>
 			<% end %>

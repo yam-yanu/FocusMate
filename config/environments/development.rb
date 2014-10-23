@@ -48,5 +48,6 @@ Rails.application.configure do
     :user_name => 'focus.mate.y.y@gmail.com',
     :password => 'amilab123'
   }
+  config.middleware.delete Rack::Lock
 
 end

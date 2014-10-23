@@ -58,7 +58,7 @@ $(document).on("click",".invite_mail_btn",function(){
 	}).done(function(){
 		alert("メールの送信が完了しました。");
 	}).fail(function(){
-		alert("メールの送信に失敗しました。\n通信環境が悪い、宛先が間違っているなどの原因が考えられます。	");
+		alert("メールの送信に失敗しました。\n通信環境が悪い、宛先が間違っているなどの原因が考えられます。");
 	});
 	$('#invite_modal').modal('hide');
 });
