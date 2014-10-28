@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
 	# Prevent CSRF attacks by raising an exception.
 	# For APIs, you may want to use :null_session instead.
 	protect_from_forgery with: :null_session
+  before_filter :configure_permitted_parameters, if: :devise_controller?
 	before_action :invited_check
 	before_action :login_check, :unless => :my_status?
 	before_action :get_user_list
@@ -20,7 +21,7 @@ private
 		if session[:group_id]
 			@group_invite = Group.where("id = #{session[:group_id]}").first
 		elsif params[:group_id] && params[:password] && request.get?
-			if @group_invite = Group.where("id = #{params[:group_id]} and password = '#{params[:password]}'").first
+			if @group_invite == Group.where("id = #{params[:group_id]} and password = '#{params[:password]}'").first
 				session[:group_id] = params[:group_id]
 			end
 		end
@@ -80,6 +81,13 @@ private
 	end
 
 	def get_activity_list
-		@activities = Activity.joins("LEFT JOIN users ON activities.user_id = users.id").where("group_id = #{current_user.group_id}").order("created_at desc").limit(10)
-	end
+    if current_user
+      @activities = Activity.joins("LEFT JOIN users ON activities.user_id = users.id").where("group_id = #{current_user.group_id}").order("created_at desc").limit(10)
+    end
+  end
+
+protected
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) << :name
+  end
 end

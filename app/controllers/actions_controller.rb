@@ -1,4 +1,5 @@
 class ActionsController < ApplicationController
+  before_action :authenticate_user!
 	before_action :get_actions, only: [:index,:show,:me]
 	def index
 		count_pageview(0)

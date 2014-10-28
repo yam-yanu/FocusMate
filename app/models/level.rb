@@ -1,10 +1,11 @@
 class Level < ActiveRecord::Base
 	has_many :users
 
-	def self.check(user)
+	def self.check(user = nil)
+    return if !user
 		user = User.find_by id: user
 		#ユーザーのレベルが最大なら何もしない
-		return if user.level.level >= Level.maximum("level")
+    return if user.level.level >= Level.maximum("level")
 		#レベルアップできるかチェックする
 		required_exp = (Level.find_by level: (user.level.level + 1)).required_exp
 		if user.exp >= required_exp

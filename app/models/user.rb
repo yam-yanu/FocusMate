@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
                          image:    auth.info.image,
                          group_id: 0,
                          exp: 0,
-                         level: 1
+                         level: Level.find_by(level: 1)
                         )
     end
     user

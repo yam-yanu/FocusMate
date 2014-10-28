@@ -1,8 +1,9 @@
 class Users::SessionsController < Devise::SessionsController
-
+  layout false
+  
 	def new
 		super
-		# render nothing: true
+		#render nothing: true
 	end
 
 	def create

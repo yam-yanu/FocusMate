@@ -1,12 +1,14 @@
 Rails.application.routes.draw do
-  root 'actions#index'
+  root 'login#show'
   resources :actions
   resources :groups,:only => [:index,:create]
   resource :login, :only => [:show], :controller => :login
 
   devise_for :users, :controllers => {
     :registrations => "users/registrations",
-    :omniauth_callbacks => "users/omniauth_callbacks"
+    :omniauth_callbacks => "users/omniauth_callbacks",
+    :passwords => 'users/passwords',
+    :sessions => 'users/sessions'
   }
 
   post 'actions/:action_id/users/:user_id/add_great' => 'greats#add_great'
