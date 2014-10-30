@@ -19,6 +19,5 @@
 //= require bootstrap-timepicker
 //= require dateformat
 //= require jquery.lazyload
-//= require_tree .
 //= require websocket_rails/main
-
+//= require_tree .

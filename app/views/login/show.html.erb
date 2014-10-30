@@ -79,6 +79,20 @@
             <%= link_to "Sign up", new_user_registration_path, :class => 'navbar-link'  %> |
             <%= link_to "Login", new_user_session_path, :class => 'navbar-link'  %>
           <% end %>
+          			<form action="/users" method="post">
+						<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+						<div><label for="user_name">名前</label><br />
+						<input autofocus="autofocus" id="user_name" name="user[name]"value="" /></div>
+						<div><label for="user_email">Email</label><br />
+						<input id="user_email" name="user[email]" type="email" value="" /></div>
+
+						<div><label for="user_password">Password</label><br />
+						<input autocomplete="off" id="user_password" name="user[password]" type="password" /></div>
+
+						<div><label for="user_password_confirmation">Password confirmation</label><br />
+						<input autocomplete="off" id="user_password_confirmation" name="user[password_confirmation]" type="password" /></div>
+						<input type="submit" value="Sign up" />
+					</form>
 				</div>
 				<div class="col-md-3 col-sm-3 hidden-xs">
 				</div>

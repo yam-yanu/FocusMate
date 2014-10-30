@@ -1,8 +1,8 @@
 class Notification < ActiveRecord::Base
-	def send_lvup
-		# lvup = Notification.where("user_id = #{current_user.id} and read_flag = 1")
-		lvup = "れべるあがったー!"
-		WebsocketRails[:streaming].trigger "lvup", lvup
-		head :ok
+	def self.send_lvup(user_id)
+		tweet = "#{user_id}さんのレベルが上がった"
+		dummy = "aaa"
+		WebsocketRails[dummy].trigger "create", tweet
+		logger.debug(tweet)
 	end
 end

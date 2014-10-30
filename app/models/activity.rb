@@ -7,6 +7,6 @@ class Activity < ActiveRecord::Base
         # 経験値を足す
         user = User.where("id = #{user_id}").update_all("exp = exp + #{exp}")
         # レベルが上がるかチェック
-        Level.check(user)
+        Level.check(user_id)
     end
 end
