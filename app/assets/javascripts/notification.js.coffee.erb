@@ -1,8 +1,7 @@
 class Streamings
 	dispatcher = new WebSocketRails("ws://#{location.host}/websocket")
-	channel = dispatcher.subscribe("aaa")
+	channel = dispatcher.subscribe(gon.current_user.id)
 	channel.bind "create", (tweet) ->
 		alert(tweet)
-
 window.TwitterStreamingSample ?= {}
 window.TwitterStreamingSample.streamings = new Streamings
