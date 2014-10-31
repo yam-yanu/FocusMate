@@ -1,0 +1,5 @@
+<% @notifications.each do |notification| %>
+	<% if !notification.read_flag %>
+		<%= render :partial=>"/layouts/one_notification", :locals=>{:notification=>notification} %>
+	<% end %>
+<% end %>

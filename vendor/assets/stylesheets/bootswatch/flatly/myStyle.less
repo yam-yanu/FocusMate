@@ -4,6 +4,7 @@ html,body{
 	-moz-user-select:none;
 	-webkit-user-select:none;
 	-khtml-user-select:none;
+	font-family:'Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','Meiryo','メイリオ','sans-serif';
 }
 
 #main-column{
@@ -20,6 +21,27 @@ html,body{
 		& > h4{
 			margin: 0 0 5px 0;
 		}
+	}
+}
+
+.one_notification{
+	display:table;
+	margin-bottom: 5px;
+	padding:5px 10px;
+	.icon{
+		display:table-cell;
+		font-size: 2em;
+		padding-right: 0.5em;
+	}
+	.content{
+		display:table-cell;
+		padding: 0;
+		vertical-align: top;
+		word-break: break-all;
+		padding-right: 1em;
+	}
+	.dismiss{
+		display:table-cell;
 	}
 }
 
@@ -67,6 +89,16 @@ html,body{
 	}
 	& > div{
 		margin: 10px 0;
+	}
+	&.left_bar_mobile{
+		font-size: 0.9em;
+		.title{
+			color: white;
+			margin: 3px 0;
+			.fa{
+				color:white;
+			}
+		}
 	}
 }
 
@@ -310,6 +342,9 @@ nav.navbar-mobile-top .mobile-brand i{
 			}
 		}
 	}
+	.group-btn{
+		margin:10px auto;
+	}
 }
 
 //== モバイル用の右サイドバー
@@ -488,3 +523,16 @@ a:hover{
 	text-decoration: none;
 }
 
+#login_form{
+	div{
+		margin-bottom: 10px;
+	}
+}
+
+.no_acount,.have_acount{
+	color:@brand-success;
+	text-decoration: underline;
+	text-align: center;
+	cursor:pointer;
+	font-size: 18px;
+}

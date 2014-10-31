@@ -3,36 +3,62 @@
 <% else %>
 	<%= render 'layouts/invite_modal' %>
 <% end %>
-<div class="left_bar_mobile">
-	<table>
-		<tr><td>
-			<div style="display: table;">
-				<div style="display: table-cell; padding-right: 10px;">
-					<%= image_tag(current_user.image, :size => "45x45", :alt => "アイコン") %>
-				</div>
-				<div style="display: table-cell; vertical-align: top;">
-					<%= current_user.name %>さん<br>
-					<% if current_user.group_id != 0 %>
-						<%= current_user.group.name %>
-					<% else %>
-						無所属
-					<% end %>
+<div class="left_bar_mobile" id="left_bar">
+	<div style="margin:10px;">
+		<div style="display: table; margin: 10.5px 0;">
+			<div style="display: table-cell; padding-right: 10px;">
+				<%= image_tag(current_user.image, :size => "45x45", :alt => "アイコン") %>
+			</div>
+			<div style="display: table-cell; vertical-align: top;">
+				<%= current_user.name %>さん<br>
+				<% if current_user.group_id != 0 %>
+					<%= current_user.group.name %>
+				<% else %>
+					無所属
+				<% end %>
+			</div>
+		</div>
+		<% if isGamification %>
+		<div class="status">
+			<div class="title"><i class="fa fa-signal"></i> ステータス</div>
+			<div class="content">
+				レベル:<span id="level"><%= current_user.level.level %></span><br>
+				称号:<span id="degree"><%= current_user.level.degree %></span><br>
+				<% exp = required_exp(current_user.id) %>
+				EXP:<span id="exp_require"><%= exp["require"] %></span><br>
+				<div class="progress">
+					<div class="progress-bar progress-bar-success" id="exp_gauge" style="width: <%= exp["gauge"] %>%">
+						<% if exp["present"] != 0 %>
+							<span id="exp_present"><%= exp["present"] %></span>EXP
+						<% end %>
+					</div>
 				</div>
 			</div>
-		</td></tr>
-		<tr><td>
-			<% if current_user.group_id != 0 %>
-				<a href="#invite_modal" data-toggle="modal">
-					<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-group"></i> <%= current_user.group.name %>に招待</button>
-				</a>
-			<% else %>
-				<a href="#make_groupModal" data-toggle="modal">
-					<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-plus"></i> グループを作成</button>
-				</a>
-				<a href="/groups">
-					<button type="button" class="btn btn-info radius-large-btn"><i class="fa fa-search"></i> グループを探す</button>
-				</a>
-			<% end %>
-		</td></tr>
-	</table>
+		</div>
+		<div class="number_of_approve">
+			<div class="title"><i class="fa fa-heart"></i> 今週の褒め</div>
+			<div class="content">
+				<%= approve_count(current_user.id) %>回メイトを褒めました.<br>
+				<%= approved_count(current_user.id) %>回メイトに褒められました.
+			</div>
+		</div>
+		<div class="activity">
+			<div class="title"><i class="fa fa-paw"></i> アクティビティ</div>
+			<div class="content">
+				<% @activities.each do |activity| %>
+					<div class="one_activity">
+						<div>
+							<%= image_tag(activity.user.image, :size => "28x28", :alt => "アイコン", :style => "margin:2px 5px;") %>
+						</div>
+						<div class="activity_content">
+							<%= activity.user.name %>さんが<br>
+							<%= activity.content %><br>
+							<%= "+#{activity.exp}EXP" if activity.exp > 0 %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		</div>
+		<% end %>
+	</div>
 </div>

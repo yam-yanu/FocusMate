@@ -17,22 +17,30 @@ module ApplicationHelper
 	def required_exp(user_id)
 		user = User.find_by(:id => user_id)
 		present_level = user.level
-		@exp = {}
+		exp = {}
 		# 現在の経験値
-		@exp["present"] = user.exp - present_level.required_exp
+		exp["present"] = user.exp - present_level.required_exp
 		if present_level.level >= Level.maximum("level")
-			@exp["next"] = 0;
-			@exp["gauge"] = 1;
-			@exp["require"] = 0;
+			exp["next"] = 1;
+			exp["gauge"] = 1;
+			exp["require"] = "Levelが最大です";
 		else
 			# レベルアップに必要な経験値
-			@exp["next"] = Level.find_by(:level => (present_level.level + 1)).required_exp - present_level.required_exp
+			exp["next"] = Level.find_by(:level => (present_level.level + 1)).required_exp - present_level.required_exp
 			#経験値メーター
-			@exp["gauge"] = (@exp["present"].to_f / @exp["next"].to_f)*100
+			exp["gauge"] = (exp["present"].to_f / exp["next"].to_f)*100
 			#残り経験値
-			@exp["require"] = @exp["next"] - @exp["present"]
+			exp["require"] = "あと#{exp["next"] - exp["present"]}EXPでLevel Up！"
 		end
-		return @exp
+		return exp
+	end
+
+	def isGamification
+		if current_user.group
+			current_user.group.game_flag
+		else
+			false
+		end
 	end
 
 end

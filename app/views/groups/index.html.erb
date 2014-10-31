@@ -4,20 +4,20 @@
 		<div class="one_group">
 			<% if @isMobile %>
 				<div class="mate_img" style="width: 54px;">
-					<%= image_tag(group.users[0].image, :size => "54x54", :alt => "アイコン") %>
+					<%= image_tag(group.users[0].image, :size => "50x50", :alt => "アイコン") %>
 				</div>
 			<% else %>
 				<div class="mate_img" style="width: 111px;">
 					<% group.users.order("updated_at desc").each_with_index do |user,i| %>
 						<% if i < 4 %>
-							<%= image_tag(user.image, :size => "54x54", :alt => "アイコン") %>
+							<%= image_tag(user.image, :size => "50x50", :alt => "アイコン") %>
 						<% else %>
 							<%= image_tag(user.image, :size => "10x10", :alt => "アイコン",:style => "display: none;") %>
 						<% end %>
 					<% end %>
 					<% if group.users.count < 4 %>
 						<% (4 - group.users.count).times do |image| %>
-							<%= image_tag("no_image.gif", :size => "54x54") %>
+							<%= image_tag("no_image.gif", :size => "50x50") %>
 						<% end %>
 					<% end %>
 				</div>

@@ -7,7 +7,8 @@ class User < ActiveRecord::Base
   has_many :action_whos
   has_many :comments
   has_many :greats
-  has_many :activity
+  has_many :activities
+  has_many :notifications
   belongs_to :group
   belongs_to :level, :class_name => 'Level', :foreign_key => 'level'
 

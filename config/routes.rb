@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root 'login#show'
   resources :actions
   resources :groups,:only => [:index,:create]
+  resources :notifications,:only => [:destroy]
   resource :login, :only => [:show], :controller => :login
 
   devise_for :users, :controllers => {

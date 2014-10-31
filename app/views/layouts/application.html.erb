@@ -55,6 +55,11 @@
 					<!-- メインカラム -->
 					<div class="col-md-6 col-sm-8 col-xs-12" id="main-column">
 	<!--					 <%= bootstrap_flash %> -->
+						<% if isGamification %>
+							<div id="notification">
+								<%= render '/layouts/notification' %>
+							</div>
+						<% end %>
 						<%= yield %>
 						<% if self.controller_name == "actions" || self.controller_name == "groups"%>
 							<div id="more"><i class="fa fa-spinner fa-spin"></i><br><br><br></div>

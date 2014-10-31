@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
 	before_action :current_location_check
 	before_action :update_logined_at
 	before_action :get_activity_list
+	before_action :get_notification_list
 	before_action :get_js_params
 
 def destroy_session_group_id
@@ -93,6 +94,11 @@ private
 		end
 	end
 
+	def get_notification_list
+		if current_user
+			@notifications = Notification.where("user_id = #{current_user.id}").order("created_at desc")
+		end
+	end
 protected
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) << :name

@@ -13,17 +13,18 @@
 				<% end %>
 			</div>
 		</div>
+		<% if isGamification %>
 		<div class="status">
 			<div class="title"><i class="fa fa-signal"></i> ステータス</div>
 			<div class="content">
-				レベル:<%= current_user.level.level %><br>
-				称号:<%= current_user.level.degree %><br>
-				<% required_exp(current_user.id) %>
-				EXP:あと<%= @exp["require"] %>EXPでLevel Up！<br>
+				レベル:<span id="level"><%= current_user.level.level %></span><br>
+				称号:<span id="degree"><%= current_user.level.degree %></span><br>
+				<% exp = required_exp(current_user.id) %>
+				EXP:<span id="exp_require"><%= exp["require"] %></span><br>
 				<div class="progress">
-					<div class="progress-bar progress-bar-success" style="width: <%= @exp["gauge"] %>%">
-						<% if @exp["present"] != 0 %>
-							<%= @exp["present"] %>EXP
+					<div class="progress-bar progress-bar-success" id="exp_gauge" style="width: <%= exp["gauge"] %>%">
+						<% if exp["present"] != 0 %>
+							<span id="exp_present"><%= exp["present"] %></span>EXP
 						<% end %>
 					</div>
 				</div>
@@ -50,9 +51,10 @@
 							<%= "+#{activity.exp}EXP" if activity.exp > 0 %>
 						</div>
 					</div>
-			<% end %>
+				<% end %>
 			</div>
 		</div>
+		<% end %>
 
 
 

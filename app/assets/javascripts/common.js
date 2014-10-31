@@ -302,3 +302,15 @@ function update_users(){
 	});
 	window.setTimeout("update_users()",30000);
 }
+
+//お知らせを消す
+$(document).on('click','.one_notification .dismiss',function(){
+	console.log($(this).parent(".one_notification").data("id"));
+	$.ajax({
+		type: 'delete',
+		url: '/notifications/'+$(this).parent(".one_notification").data("id"),
+		data: {id: $(this).parent(".one_notification").data("id")},
+	}).done(function(){
+	}).fail(function(){
+	});
+});
