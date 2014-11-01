@@ -47,6 +47,7 @@
 				$("#form_open").html("<i class='fa fa-envelope'></i>MailAddressで登録");
 				$("#submit").val("登録");
 				$("#login_form").attr("action", "/users");
+				$("#submit").addClass('regist');
 				$(this).text("アカウントをもっている方");
 				$(this).addClass('have_acount');
 				$(this).removeClass('no_acount');
@@ -58,9 +59,16 @@
 				$("#form_open").html("<i class='fa fa-envelope'></i>MailAddressでログイン");
 				$("#submit").val("ログイン");
 				$("#login_form").attr("action", "/users/sign_in");
+				$("#submit").removeClass('regist');
 				$(this).text("アカウントをもっていない方");
 				$(this).addClass('no_acount');
 				$(this).removeClass('have_acount');
+			});
+			$(document).on('click','.regist',function(){
+				if(!$("#user_name").val() || !$("#user_email").val() || !$("#user_password").val() || !$("#user_password_confirmation").val()){
+					alert("入力していない項目があります");
+					return false;
+				}
 			});
 		</script>
 	</head>
