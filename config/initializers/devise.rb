@@ -261,4 +261,6 @@ Devise.setup do |config|
   else
     config.omniauth :facebook, "1417380501865571", "36941ca4bc50160b3e474aeabf11d454",:locale => "ja_JP"
   end
+  config.http_authenticatable_on_xhr = false
+  config.navigational_formats = ["*/*", :html, :json]
 end

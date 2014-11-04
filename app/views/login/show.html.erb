@@ -48,6 +48,7 @@
 				$("#submit").val("登録");
 				$("#login_form").attr("action", "/users");
 				$("#submit").addClass('regist');
+				$("#submit").removeClass('login');
 				$(this).text("アカウントをもっている方");
 				$(this).addClass('have_acount');
 				$(this).removeClass('no_acount');
@@ -59,6 +60,7 @@
 				$("#form_open").html("<i class='fa fa-envelope'></i>MailAddressでログイン");
 				$("#submit").val("ログイン");
 				$("#login_form").attr("action", "/users/sign_in");
+				$("#submit").addClass('login');
 				$("#submit").removeClass('regist');
 				$(this).text("アカウントをもっていない方");
 				$(this).addClass('no_acount');
@@ -69,6 +71,29 @@
 					alert("入力していない項目があります");
 					return false;
 				}
+			});
+			$(document).on('click','.login',function(){
+				if(!$("#user_email").val() || !$("#user_password").val()){
+					alert("入力していない項目があります");
+					return false;
+				}
+				var form_data = {};
+				form_data["email"] = $("#user_email").val();
+				form_data["password"] = $("#user_password").val();
+				$.ajax({
+					type: 'post',
+					url: '/users/sign_in',
+					data: {user: form_data,
+							authenticity_token: $("#authenticity_token").val()},
+				}).done(function(result){
+					if(result["result"]){
+						location.reload();
+					}else{
+						$("#login_form").prepend('<div class="alert alert-dismissable alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>メールアドレスかパスワードが<br>間違っているようです．</div>');
+					}
+				}).fail(function(result){
+				});
+				return false;
 			});
 		</script>
 	</head>
@@ -125,7 +150,7 @@
 									<input autocomplete="off" id="user_password_confirmation" class="form-control input-sm" name="user[password_confirmation]" type="password"/>
 								</div>
 								<div style="text-align:center;">
-									<input type="submit" id="submit" class="btn btn-adn" value="ログイン" />
+									<input type="submit" id="submit" class="btn btn-adn login" value="ログイン" />
 								</div>
 							</form>
 						</div>

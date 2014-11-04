@@ -12,9 +12,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     super { |resource| resource.remember_me = true }
-    logger.debug("ああああああああああああああああああああ")
   end
-  
+
   def new
 #     render nothing: true
     super
