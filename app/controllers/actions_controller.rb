@@ -43,6 +43,13 @@ class ActionsController < ApplicationController
 			end
 		end
 	end
+	def group_show
+		@actions = Action.joins(:who).where("users.group_id = #{params[:group_id]}").order("act_time desc")
+		add_timeline
+		if !params[:act_time]
+			render :template => "actions/index"
+		end
+	end
 
 	private
 		def action_params

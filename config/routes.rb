@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get 'mypage' => 'actions#me'
   get 'update_users' => 'users#update_users'
   get 'group_id/:group_id/password/:password' => 'actions#index'
+  get '/group_show/:group_id' => 'actions#group_show'
   get 'send_mail' => 'mail#send_mail'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

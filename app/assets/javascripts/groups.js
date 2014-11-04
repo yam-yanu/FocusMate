@@ -62,3 +62,20 @@ $(document).on("click",".invite_mail_btn",function(){
 	});
 	$('#invite_modal').modal('hide');
 });
+
+// //別のグループの行動を見る
+// $(document).on("click",".group_show_btn",function(){
+// 	var display_space = $(this).closest(".one_group");
+// 	console.log($(this).prev(".shortcut"));
+// 	$(this).prev(".shortcut").removeClass("shortcut");
+// 	$(this).css("display","none");
+// 	$.ajax({
+// 		type: 'get',
+// 		url: '/group_show',
+// 		data: {group_id: $(this).data("group"),
+// 				act_time: $(this).data("act_time")},
+// 	}).done(function(actions){
+// 		display_space.after(actions);
+// 	}).fail(function(){
+// 	});
+// });
