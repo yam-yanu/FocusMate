@@ -71,6 +71,28 @@
 					alert("入力していない項目があります");
 					return false;
 				}
+				var form_data = {};
+				form_data["name"] = $("#user_name").val();
+				form_data["email"] = $("#user_email").val();
+				form_data["password"] = $("#user_password").val();
+				form_data["password_confirmation"] = $("#user_password_confirmation").val();
+				$.ajax({
+					type: 'post',
+					url: '/users',
+					data: {user: form_data,
+							authenticity_token: $("#authenticity_token").val()},
+				}).done(function(result){
+					if(result["result"] == "sign_up"){
+						location.reload();
+					}else{
+						$.each(result["result"],function(i,val){
+							$("#login_form").prepend('<div class="alert alert-dismissable alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'+val+'</div>');
+						});
+						console.log(result);
+					}
+				}).fail(function(result){
+				});
+				return false;
 			});
 			$(document).on('click','.login',function(){
 				if(!$("#user_email").val() || !$("#user_password").val()){

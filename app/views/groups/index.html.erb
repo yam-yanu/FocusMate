@@ -4,7 +4,12 @@
 		<div class="one_group">
 			<% if @isMobile %>
 				<div class="mate_img" style="width: 54px;">
-					<%= image_tag(group.users[0].image, :size => "50x50", :alt => "アイコン") %>
+					<% group.users.order("updated_at desc").each_with_index do |user,i| %>
+						<% break if i == 1 %>
+						<div class="mate_img" style="width: 54px;">
+							<%= image_tag(user.image, :size => "50x50", :alt => "アイコン") %>
+						</div>
+					<% end %>
 				</div>
 			<% else %>
 				<div class="mate_img" style="width: 111px;">

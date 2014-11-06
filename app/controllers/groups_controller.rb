@@ -7,6 +7,7 @@ class GroupsController < ApplicationController
 		@group = Group.new(group_params)
 		if @group.save
 			User.where("id = '#{current_user.id}'").update_all("group_id = '#{@group.id}'")
+			@group.update_attribute(:game_flag,0)
 		end
 		redirect_to :controller => 'actions', :action => 'index'
 	end
@@ -32,7 +33,11 @@ class GroupsController < ApplicationController
 		else
 			render nothing: true
 		end
-		logger.debug("fdsfasdfa")
+	end
+
+	def activate_gamification
+		Group.where("id = #{params[:group_id]}").update_all("game_flag = 1")
+		redirect_to :controller => 'actions', :action => 'index'
 	end
 
 	private

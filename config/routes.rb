@@ -15,11 +15,12 @@ Rails.application.routes.draw do
   post 'actions/:action_id/users/:user_id/add_great' => 'greats#add_great'
   post 'actions/:action_id/users/:user_id/comments/:comment/add_comment' => 'comments#add_comment'
   post 'change_group' => 'groups#change_group'
+  get 'gamification/:group_id' => 'groups#activate_gamification'
   get 'greats/:action_id' => 'greats#index'
   get 'mypage' => 'actions#me'
   get 'update_users' => 'users#update_users'
   get 'group_id/:group_id/password/:password' => 'actions#index'
-  get '/group_show/:group_id' => 'actions#group_show'
+  get 'group_show/:group_id' => 'actions#group_show'
   get 'send_mail' => 'mail#send_mail'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

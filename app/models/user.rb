@@ -12,6 +12,8 @@ class User < ActiveRecord::Base
   belongs_to :group
   belongs_to :level, :class_name => 'Level', :foreign_key => 'level'
 
+  validates :name, presence: true, length: { maximum: 20 }
+
   def self.find_for_facebook_oauth(auth, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid).first
     unless user
