@@ -10,10 +10,11 @@ class NpcApprove
         "select * from
         (
             select approve_user_id as id,count(a.id) as count from approves as a
-            left join users as u on a.id = u.id
+            left join users as u on a.approve_user_id = u.id
             left join groups as g on u.group_id = g.id
             where a.created_at >= datetime('#{prev_week_time}') and
-            g.game_flag = 1
+            g.game_flag = 1 and
+            a.approve_type in (1,2)
             group by a.approve_user_id
         )as approve where approve.count >= 2")
     users.each do |user|
@@ -29,10 +30,11 @@ class NpcApprove
         "select * from
         (
             select approved_user_id as id,count(a.id) as count from approves as a
-            left join users as u on a.id = u.id
+            left join users as u on a.approved_user_id = u.id
             left join groups as g on u.group_id = g.id
             where a.created_at >= datetime('#{prev_week_time}') and
-            g.game_flag = 1
+            g.game_flag = 1 and
+            a.approve_type in (1,2)
             group by a.approved_user_id
         )as approve where approve.count >= 2")
     users.each do |user|

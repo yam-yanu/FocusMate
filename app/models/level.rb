@@ -1,4 +1,5 @@
 class Level < ActiveRecord::Base
+	self.primary_key = :level
 	has_many :users
 	has_many :notifications
 

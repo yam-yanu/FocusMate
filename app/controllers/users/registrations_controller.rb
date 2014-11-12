@@ -8,6 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     hash[:level] = Level.find_by(level: 1)
     hash[:group_id] = 0
     hash[:image] = "/assets/no_image.gif"
+    hash[:mail_count] = 0
     super
   end
 
