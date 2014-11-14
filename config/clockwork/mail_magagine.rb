@@ -62,28 +62,33 @@ class MailMagagine
     body = ""
     body << "FocusMateが始まってけっこう時間が経ちましたね．\n"
     body << "メイトを褒めていてくれたら幸いです．\n\n"
-    body << "メイトの良い部分を発見するきっかけになれば良いですね"
-    body << ""
-    body << ""
-    body << ""
-    body << ""
-    body << ""
+    body << "メイトの良い部分を発見するきっかけになれば良いですね．\n\n"
+    body << "http://49.212.200.39:3000\n\n"
+    body << "p.s思ったよりレベルを上げてくれている方もいらっしゃってうれしいです．\n"
+    body << "なので最初はレベル10までしかなかったのですがレベルを追加しました．\n"
+    body << "ちなみに高いレベルほど変な称号になります．"
     count_up(user)
     body
   end
   def third_mail(user)
     body = ""
     body << user.name
-    body << "さんはもうメイトを\n褒めてみましたか？\n\n"
-    body << "FocusMateで行動して\n新しい称号をゲットしてみましょう！\n\n"
+    body << "さんがFocusMateを始めてからかなり経ちましたね．\n"
+    body << "メイトを褒めるって意外と難しいですよね．\n"
+    body << "できるだけすぐに褒めるのがコツだそうです．\n\n"
     body << "http://49.212.200.39:3000\n\n"
-    body << "p.sスマホからアクセスしてうまいこと操作すると\nFocusMateがアプリっぽくなります．"
+    body << "p.s褒めることは自分の洞察力や観察力アップにも繋がるそうです．"
     count_up(user)
     body
   end
   def fourth_mail(user)
     body = ""
-    body << ""
+    body << user.name
+    body << "さん\n"
+    body << "メイトを褒めるって意外と難しいですよね．\n"
+    body << "できるだけすぐに褒めるのがコツだそうです．\n\n"
+    body << "http://49.212.200.39:3000\n\n"
+    body << "p.s褒めることは自分の洞察力や観察力アップにも繋がるそうです．"
     count_up(user)
     body
   end
