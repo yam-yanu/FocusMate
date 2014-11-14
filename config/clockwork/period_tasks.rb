@@ -10,7 +10,7 @@ class PeriodTasks
   end
 
   def self.send_mail
-    npc = MailMagagine.new
-    npc.send_mail
+    mail_magagine = MailMagagine.new
+    mail_magagine.send_to_all
   end
 end
