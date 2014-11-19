@@ -90,7 +90,9 @@ private
 
 	def get_js_params
 		if current_user
-			gon.current_user = current_user
+			gon.id = current_user.id
+			gon.game = false
+			gon.game = current_user.group.game_flag if current_user.group
 		end
 	end
 

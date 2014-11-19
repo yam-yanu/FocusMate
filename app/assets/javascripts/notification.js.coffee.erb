@@ -1,6 +1,6 @@
 class Streamings
 	dispatcher = new WebSocketRails("ws://#{location.host}/websocket")
-	channel = dispatcher.subscribe(gon.current_user.id)
+	channel = dispatcher.subscribe(gon.id)
 	channel.bind "lvup", (data) ->
 		$("#notification").prepend(data.message)
 		$("#level").text(data.level)

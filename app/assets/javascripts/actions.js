@@ -74,6 +74,7 @@ $(document).on('mouseenter','.well .badge',function(){
 
 //ユーザーの名前かアイコンがホバーされた時ユーザーの情報を表示
 $(document).on('mouseenter','.showStatus',function(){
+	if(!gon.game) return;
 	var clicked_dom = $(this);
 	clicked_dom.stop(true, false).before('<div id="user_status" class="panel"><i class="fa fa-spinner fa-spin" style="font-size:25px;"></i></div>');
 	$('#user_status').css("left",(clicked_dom.position().left + 8));
