@@ -1,3 +1,8 @@
+<% if current_user.group_id == 0 %>
+	<%= render 'layouts/make_group_modal' %>
+<% else %>
+	<%= render 'layouts/invite_modal' %>
+<% end %>
 <div class="right_bar_mobile">
 	<h4>メイト一覧</h4>
 	<table class="table table-hover">
@@ -37,4 +42,16 @@
 			<% end %>
 		</tbody>
 	</table>
+	<% if current_user.group_id != 0 %>
+		<a href="#invite_modal" data-toggle="modal">
+			<button type="button" class="btn btn-info radius-large-btn group-btn"><i class="fa fa-group"></i>他のメンバーを招待</button>
+		</a>
+	<% else %>
+		<a href="#make_groupModal" data-toggle="modal">
+			<button type="button" class="btn btn-info radius-large-btn group-btn"><i class="fa fa-plus"></i> グループを作成</button>
+		</a>
+		<a href="/groups">
+			<button type="button" class="btn btn-info radius-large-btn group-btn"><i class="fa fa-search"></i> グループを探す</button>
+		</a>
+	<% end %>
 </div>

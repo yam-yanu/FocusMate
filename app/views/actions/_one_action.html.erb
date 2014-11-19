@@ -5,8 +5,8 @@
 		<span class="badge"></span>
 	<% end %>
 	<% action.action_whos.each_with_index do |who, i| %>
-		<%= image_tag(who.user.image, :size => "37x37", :alt => "アイコン") %>
-		<%= link_to who.user.name,:controller =>"actions",:action =>"show",:id => who.user.id %>
+		<%= image_tag(who.user.image, :size => "37x37", :alt => "アイコン" ,:class => "showStatus",:"data-user_id" => who.user.id) %>
+		<%= link_to who.user.name,{:controller =>"actions",:action =>"show",:id => who.user.id},{:class => "showStatus",:"data-user_id" => who.user.id} %>
 		<% if i != (action.action_whos.count - 1) %>
 			さんと<br>
 		<% else %>
@@ -15,7 +15,7 @@
 	<% end %>
 	<div style="text-align:center;"><%= action.where %>で</div>
 	<div style="text-align:center;"><%= action.what %>ました.</div>
-	<div class="author">- by <%= image_tag(action.author.image, :size => "20x20", :alt => "アイコン") %><%= action.author.name %></div>
+	<div class="author">- by <%= image_tag(action.author.image, :size => "20x20", :alt => "アイコン" ,:class => "showStatus",:"data-user_id" => action.author.id) %><%= action.author.name %></div>
 	<% if action.greats.exists?(:user_id => current_user.id) %>
 		<div class="great_info great" >すでに褒めています</div>
 	<% else %>

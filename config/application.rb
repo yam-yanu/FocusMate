@@ -21,5 +21,6 @@ module FocusMate
     # config.i18n.default_locale = :de
     config.title = "FocusMate"
     config.beginning_of_week = :monday
+    config.autoload_paths += %W(#{config.root}/config/clockwork)
   end
 end

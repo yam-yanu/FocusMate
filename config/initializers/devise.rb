@@ -130,6 +130,7 @@ Devise.setup do |config|
 
   # If true, extends the user's remember period when remembered via cookie.
   # config.extend_remember_period = false
+  config.extend_remember_period = true
 
   # Options to be passed to the created cookie. For instance, you can set
   # secure: true in order to force SSL only cookies.
@@ -260,4 +261,6 @@ Devise.setup do |config|
   else
     config.omniauth :facebook, "1417380501865571", "36941ca4bc50160b3e474aeabf11d454",:locale => "ja_JP"
   end
+  config.http_authenticatable_on_xhr = false
+  config.navigational_formats = ["*/*", :html, :json]
 end

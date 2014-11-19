@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
 	# Prevent CSRF attacks by raising an exception.
 	# For APIs, you may want to use :null_session instead.
 	protect_from_forgery with: :null_session
+	before_filter :configure_permitted_parameters, if: :devise_controller?
 	before_action :invited_check
 	before_action :login_check, :unless => :my_status?
 	before_action :get_user_list
@@ -9,6 +10,9 @@ class ApplicationController < ActionController::Base
 	before_action :mobile_check
 	before_action :current_location_check
 	before_action :update_logined_at
+	before_action :get_activity_list
+	before_action :get_notification_list
+	before_action :get_js_params
 
 def destroy_session_group_id
 	session[:group_id] = nil
@@ -19,7 +23,7 @@ private
 		if session[:group_id]
 			@group_invite = Group.where("id = #{session[:group_id]}").first
 		elsif params[:group_id] && params[:password] && request.get?
-			if @group_invite = Group.where("id = #{params[:group_id]} and password = '#{params[:password]}'").first
+			if @group_invite == Group.where("id = #{params[:group_id]} and password = '#{params[:password]}'").first
 				session[:group_id] = params[:group_id]
 			end
 		end
@@ -70,7 +74,35 @@ private
 	end
 	def update_logined_at
 		if current_user
+			user = User.find_by id: current_user.id
+			if Time.now.in_time_zone('Tokyo').beginning_of_day - user.updated_at.in_time_zone('Tokyo').beginning_of_day > 0
+				Activity.plus_exp(current_user.id,1,"ログインしました")
+			end
 			User.where("id = '#{current_user.id}'").update_all("updated_at = '#{Time.now}'")
 		end
 	end
+
+	def get_activity_list
+		if current_user
+			@activities = Activity.joins("LEFT JOIN users ON activities.user_id = users.id").where("group_id = #{current_user.group_id}").order("created_at desc").limit(10)
+		end
+	end
+
+	def get_js_params
+		if current_user
+			gon.id = current_user.id
+			gon.game = false
+			gon.game = current_user.group.game_flag if current_user.group
+		end
+	end
+
+	def get_notification_list
+		if current_user
+			@notifications = Notification.where("user_id = #{current_user.id}").order("created_at desc")
+		end
+	end
+protected
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) << :name
+  end
 end

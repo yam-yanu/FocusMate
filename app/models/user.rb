@@ -7,7 +7,12 @@ class User < ActiveRecord::Base
   has_many :action_whos
   has_many :comments
   has_many :greats
+  has_many :activities
+  has_many :notifications
   belongs_to :group
+  belongs_to :level, :class_name => 'Level', :foreign_key => 'level'
+
+  validates :name, presence: true, length: { maximum: 20 }
 
   def self.find_for_facebook_oauth(auth, signed_in_resource=nil)
     user = User.where(:provider => auth.provider, :uid => auth.uid).first
@@ -20,7 +25,8 @@ class User < ActiveRecord::Base
                          image:    auth.info.image,
                          group_id: 0,
                          exp: 0,
-                         level: 1
+                         level: Level.find_by(level: 1),
+                         mail_count: 0
                         )
     end
     user

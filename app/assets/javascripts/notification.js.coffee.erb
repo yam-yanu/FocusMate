@@ -1,0 +1,16 @@
+class Streamings
+	dispatcher = new WebSocketRails("ws://#{location.host}/websocket")
+	channel = dispatcher.subscribe(gon.id)
+	channel.bind "lvup", (data) ->
+		$("#notification").prepend(data.message)
+		$("#level").text(data.level)
+		$("#degree").text(data.degree)
+		$("#exp_require").text(data.exp.require)
+		$("#exp_present").text(data.exp.present)
+		$("#exp_gauge").css("width",data.exp.gauge+"%")
+	channel.bind "plus_exp", (data) ->
+		$("#exp_require").text(data.exp.require)
+		$("#exp_present").text(data.exp.present)
+		$("#exp_gauge").css("width",data.exp.gauge+"%")
+window.NotificationStreaming ?= {}
+window.NotificationStreaming.streamings = new Streamings

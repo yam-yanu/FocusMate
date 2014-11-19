@@ -1,5 +1,5 @@
 class NoticeMailer < ActionMailer::Base
-  default from: "FocusMate<focus.mate.y.y@gmail.com>"
+  default from: "FocusMate<sgj6aja8@kke.com>"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:

@@ -41,12 +41,13 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.smtp_settings = {
     :enable_starttls_auto => true,
-    :address => 'smtp.gmail.com',
+    :address => 'smtp.sendgrid.net',
     :port => '587',
-    :domain => 'smtp.gmail.com',
-    :authentication => 'plain',
-    :user_name => 'focus.mate.y.y@gmail.com',
+    :domain => 'kke.com',
+    :authentication => :plain,
+    :user_name => 'sgj6aja8@kke.com',
     :password => 'amilab123'
   }
+  config.middleware.delete Rack::Lock
 
 end

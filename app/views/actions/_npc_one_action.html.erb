@@ -5,8 +5,8 @@
 		<span class="badge"></span>
 	<% end %>
 	<% action.action_whos.each_with_index do |who, i| %>
-		<%= image_tag(who.user.image, :size => "37x37", :alt => "アイコン") %>
-		<%= link_to who.user.name,:controller =>"actions",:action =>"show",:id => who.user.id %>
+		<%= image_tag(who.user.image, :size => "37x37", :alt => "アイコン" ,:class => "showStatus",:"data-user_id" => who.user.id) %>
+		<%= link_to who.user.name,{:controller =>"actions",:action =>"show",:id => who.user.id},{:class => "showStatus",:"data-user_id" => who.user.id} %>
 		<% if i != (action.action_whos.count - 1) %>
 			さんと<br>
 		<% else %>

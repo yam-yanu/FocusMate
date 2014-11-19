@@ -9,10 +9,14 @@ class NpcApprove
     users = Approve.find_by_sql(
         "select * from
         (
-            select approve_user_id as id,count(id) as count from approves
-            where created_at >= datetime('#{prev_week_time}')
-            group by approve_user_id
-        )as u where u.count >= 2")
+            select approve_user_id as id,count(a.id) as count from approves as a
+            left join users as u on a.approve_user_id = u.id
+            left join groups as g on u.group_id = g.id
+            where a.created_at >= datetime('#{prev_week_time}') and
+            g.game_flag = 1 and
+            a.approve_type in (1,2)
+            group by a.approve_user_id
+        )as approve where approve.count >= 2")
     users.each do |user|
       action = Action.create(:who => User.find(user.id),:act_time => Time.now,:where => "FocusMateで",:what => "先週、よく褒めました",:author => User.first,:action_type => 1)
       if !action.new_record?#保存に失敗するとtrue
@@ -25,10 +29,14 @@ class NpcApprove
     users = Approve.find_by_sql(
         "select * from
         (
-            select approved_user_id as id,count(id) as count from approves
-            where created_at >= datetime('#{prev_week_time}')
-            group by approved_user_id
-        )as u where u.count >= 2")
+            select approved_user_id as id,count(a.id) as count from approves as a
+            left join users as u on a.approved_user_id = u.id
+            left join groups as g on u.group_id = g.id
+            where a.created_at >= datetime('#{prev_week_time}') and
+            g.game_flag = 1 and
+            a.approve_type in (1,2)
+            group by a.approved_user_id
+        )as approve where approve.count >= 2")
     users.each do |user|
       action = Action.create(:who => User.find(user.id),:act_time => Time.now,:where => "FocusMateで",:what => "先週、よく褒められました",:author => User.first,:action_type => 1)
       if !action.new_record?#保存に失敗するとtrue

@@ -1,0 +1,28 @@
+<% if @user%>
+	<% user = @user %>
+	<div style="display: table;">
+		<div style="display: table-cell; padding-right: 10px;">
+			<%= image_tag(user.image, :size => "45x45", :alt => "アイコン") %>
+		</div>
+		<div style="display: table-cell; vertical-align: top;">
+			<%= user.name %>さん
+		</div>
+	</div>
+	<div class="status">
+		<div class="title"><i class="fa fa-signal"></i> ステータス</div>
+		<div class="content">
+			レベル:<span id="level"><%= user.level.level %></span><br>
+			称号:<span id="degree"><%= user.level.degree %></span><br>
+			<% exp = required_exp(user.id) %>
+		</div>
+	</div>
+	<div class="number_of_approve">
+		<div class="title"><i class="fa fa-heart"></i> 今週の褒め</div>
+		<div class="content">
+			<%= approve_count(user.id) %>回メイトを褒めました.<br>
+			<%= approved_count(user.id) %>回メイトに褒められました.
+		</div>
+	</div>
+<% else %>
+	情報が見つかりません
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141010035402) do
+ActiveRecord::Schema.define(version: 20141112063951) do
 
   create_table "action_whos", force: true do |t|
     t.integer  "action_id"
@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 20141010035402) do
     t.integer  "group_id"
     t.integer  "exp"
     t.integer  "level"
+    t.integer  "mail_count"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

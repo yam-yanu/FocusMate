@@ -12,4 +12,47 @@ module ApplicationHelper
 		approve_count = Approve.where("approved_user_id = #{user_id} and created_at >= datetime('#{beginning_of_week}')").count
 		return approve_count
 	end
+
+	# 経験値関連の数値
+	def required_exp(user_id)
+		user = User.find_by(:id => user_id)
+		present_level = user.level
+		exp = {}
+		# 現在の経験値
+		exp["present"] = user.exp - present_level.required_exp
+		if present_level.level >= Level.maximum("level")
+			exp["next"] = 1;
+			exp["gauge"] = 1;
+			exp["require"] = "Levelが最大です";
+		else
+			# レベルアップに必要な経験値
+			exp["next"] = Level.find_by(:level => (present_level.level + 1)).required_exp - present_level.required_exp
+			#経験値メーター
+			exp["gauge"] = (exp["present"].to_f / exp["next"].to_f)*100
+			#残り経験値
+			exp["require"] = "あと#{exp["next"] - exp["present"]}EXPでLevel Up！"
+		end
+		return exp
+	end
+
+	def isGamification
+		if current_user.group
+			current_user.group.game_flag
+		else
+			false
+		end
+	end
+
+	def resource_name
+		:user
+	end
+
+	def resource
+		@resource ||= User.new
+	end
+
+	def devise_mapping
+		@devise_mapping ||= Devise.mappings[:user]
+	end
+
 end

@@ -1,4 +1,5 @@
 class ActionsController < ApplicationController
+  before_action :authenticate_user!
 	before_action :get_actions, only: [:index,:show,:me]
 	def index
 		count_pageview(0)
@@ -28,17 +29,25 @@ class ActionsController < ApplicationController
 			if @action.new_record?#保存に失敗するとtrue
 				render nothing: true
 			else
+				Activity.plus_exp(current_user.id,5,"褒めました")
 				action_id = @action.id
 				params[:who].each do |who|
 					ActionWho.create(:action_id => action_id,:user_id => who)
-					approve = ApprovesController.new()
-					approve.create(current_user.id,who,1)
+					Approve.data_create(current_user.id,who,1)
+					Activity.plus_exp(who,3,"褒められました")
 				end
 				@actions = Action.where("id = #{action_id}")
 				respond_to do |format|
 					format.html { render :partial =>'timeline' }
 				end
 			end
+		end
+	end
+	def group_show
+		@actions = Action.joins(:who).where("users.group_id = #{params[:group_id]}").order("act_time desc")
+		add_timeline
+		if !params[:act_time]
+			render :template => "actions/index"
 		end
 	end
 

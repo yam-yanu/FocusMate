@@ -35,6 +35,89 @@
 		<%= favicon_link_tag 'favicon.ico', :rel => 'shortcut icon' %>
 
 		<%= javascript_include_tag "application" %>
+		<script type="text/javascript">
+			$(document).on('click','#form_open',function(e){
+				e.preventDefault();
+				$(".form_box").css("display","block");
+			});
+			$(document).on('click','.no_acount',function(){
+				$("#user_name").parent("div").css("display","block");
+				$("#user_password_confirmation").parent("div").css("display","block");
+				$("#facebook-btn").html("<i class='fa fa-facebook'></i>Facebookで登録");
+				$("#form_open").html("<i class='fa fa-envelope'></i>MailAddressで登録");
+				$("#submit").val("登録");
+				$("#login_form").attr("action", "/users");
+				$("#submit").addClass('regist');
+				$("#submit").removeClass('login');
+				$(this).text("アカウントをもっている方");
+				$(this).addClass('have_acount');
+				$(this).removeClass('no_acount');
+			});
+			$(document).on('click','.have_acount',function(){
+				$("#user_name").parent("div").css("display","none");
+				$("#user_password_confirmation").parent("div").css("display","none");
+				$("#facebook-btn").html("<i class='fa fa-facebook'></i>Facebookでログイン");
+				$("#form_open").html("<i class='fa fa-envelope'></i>MailAddressでログイン");
+				$("#submit").val("ログイン");
+				$("#login_form").attr("action", "/users/sign_in");
+				$("#submit").addClass('login');
+				$("#submit").removeClass('regist');
+				$(this).text("アカウントをもっていない方");
+				$(this).addClass('no_acount');
+				$(this).removeClass('have_acount');
+			});
+			$(document).on('click','.regist',function(){
+				if(!$("#user_name").val() || !$("#user_email").val() || !$("#user_password").val() || !$("#user_password_confirmation").val()){
+					alert("入力していない項目があります");
+					return false;
+				}
+				var form_data = {};
+				form_data["name"] = $("#user_name").val();
+				form_data["email"] = $("#user_email").val();
+				form_data["password"] = $("#user_password").val();
+				form_data["password_confirmation"] = $("#user_password_confirmation").val();
+				$.ajax({
+					type: 'post',
+					url: '/users',
+					data: {user: form_data,
+							authenticity_token: $("#authenticity_token").val()},
+				}).done(function(result){
+					if(result["result"] == "sign_up"){
+						location.reload();
+					}else{
+						$.each(result["result"],function(i,val){
+							$("#login_form").prepend('<div class="alert alert-dismissable alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>'+val+'</div>');
+						});
+						console.log(result);
+					}
+				}).fail(function(result){
+				});
+				return false;
+			});
+			$(document).on('click','.login',function(){
+				if(!$("#user_email").val() || !$("#user_password").val()){
+					alert("入力していない項目があります");
+					return false;
+				}
+				var form_data = {};
+				form_data["email"] = $("#user_email").val();
+				form_data["password"] = $("#user_password").val();
+				$.ajax({
+					type: 'post',
+					url: '/users/sign_in',
+					data: {user: form_data,
+							authenticity_token: $("#authenticity_token").val()},
+				}).done(function(result){
+					if(result["result"]){
+						location.reload();
+					}else{
+						$("#login_form").prepend('<div class="alert alert-dismissable alert-danger"><button type="button" class="close" data-dismiss="alert">×</button>メールアドレスかパスワードが<br>間違っているようです．</div>');
+					}
+				}).fail(function(result){
+				});
+				return false;
+			});
+		</script>
 	</head>
 	<body>
 		<div class="navbar navbar-default navbar-fixed-top">
@@ -61,20 +144,45 @@
 						自分の行動は書き込めません。
 					</blockquote></ul>
 <!--					 <%= bootstrap_flash %> -->
-					<div class="col-xs-3"></div>
-					<div class="col-xs-6">
-						<%= link_to "<i class='fa fa-facebook'></i>Facebookでログイン/登録".html_safe, user_omniauth_authorize_path(:facebook), { :class => "btn btn-block btn-social btn-facebook", :style => "width:250px;margin:30px 0" } %>
+					<div class="col-xs-6" style="text-align:left;">
+						<%= link_to "<i class='fa fa-facebook'></i>Facebookでログイン".html_safe, user_omniauth_authorize_path(:facebook), { :class => "btn btn-block btn-social btn-facebook", :id => "facebook-btn",:style => "width:100%;margin:30px 10px;" } %>
 					</div>
-					<div class="col-xs-3"></div>
-					<ul style="clear:both;"><blockquote>
-						Facebookから簡単にログインができます。<br>
-						名前,サムネイル,e-mailの情報のみ取得します。
-					</blockquote></ul>
+					<div class="col-xs-6">
+						<a class="btn btn-block btn-social btn-adn" id="form_open" href="#" style="width:100%;margin:30px 10px;"><i class="fa fa-envelope"></i>MailAddressでログイン</a>
+					</div>
+					<div class="row form_box" style="display:none;">
+						<div class="col-md-2 col-sm-2 hidden-xs"></div>
+						<div class="col-md-8 col-sm-8 col-xs-12">
+							<form id="login_form" action="/users/sign_in" method="post" style="font-size: 18px;">
+								<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+								<div style="display:none;">
+									名前
+									<input autofocus="autofocus" id="user_name" class="form-control input-sm" name="user[name]"value=""/>
+								</div>
+								<div>
+									メールアドレス
+									<input id="user_email" class="form-control input-sm" name="user[email]" type="email" value="" />
+								</div>
+								<div>
+									パスワード
+									<input autocomplete="off" id="user_password" class="form-control input-sm" name="user[password]" type="password" />
+								</div>
+								<div style="display:none;" >
+									パスワードの確認
+									<input autocomplete="off" id="user_password_confirmation" class="form-control input-sm" name="user[password_confirmation]" type="password"/>
+								</div>
+								<div style="text-align:center;">
+									<input type="submit" id="submit" class="btn btn-adn login" value="ログイン" />
+								</div>
+							</form>
+						</div>
+						<div class="col-md-2 col-sm-2 hidden-xs"></div>
+					</div>
+					<div class="no_acount">アカウントをもっていない方</div>
 				</div>
 				<div class="col-md-3 col-sm-3 hidden-xs">
 				</div>
 			</div><!--/row-->
-
 		</div> <!-- /container -->
 
 	</body>

@@ -9,4 +9,18 @@ class UsersController < ApplicationController
 			#format.json { render :json => @user_list }
 		end
 	end
+	def show
+		if(params[:id])
+			@user = User.find_by :id => params[:id]
+			if @user.present?
+				respond_to do |format|
+					format.html { render :partial =>'show' }
+				end
+			else
+				render nothing: true
+			end
+		else
+			render nothing: true
+		end
+	end
 end
