@@ -413,6 +413,31 @@ nav.navbar-mobile-top .mobile-brand i{
 	position:absolute;
 }
 
+#user_status{
+	position: absolute;
+	background-color: white;
+	color: @brand-primary;
+	font-size: @font-size-base;
+	text-align: left;
+	padding: 15px 10px 10px 10px;
+	z-index: 1;
+	white-space: nowrap;
+	&:after{
+		border:10px solid transparent;
+		border-bottom-color: white;
+		border-top-width:0;
+		width:0;
+		top:-10px;
+		content:"";
+		display:block;
+		right:6px;
+		position:absolute;
+	}
+	& > div{
+		margin-bottom: 5px;
+	}
+}
+
 .greats_mate_list{
 	font-size: @font-size-small;
 }

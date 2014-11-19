@@ -71,3 +71,22 @@ $(document).on('mouseenter','.well .badge',function(){
 		$(this).data('toggled', 'off');
 	}
 });
+
+//ユーザーの名前かアイコンがホバーされた時ユーザーの情報を表示
+$(document).on('mouseenter','.showStatus',function(){
+	var clicked_dom = $(this);
+	clicked_dom.stop(true, false).before('<div id="user_status" class="panel"><i class="fa fa-spinner fa-spin" style="font-size:25px;"></i></div>');
+	$('#user_status').css("left",(clicked_dom.position().left + 8));
+	$('#user_status').css("top",(clicked_dom.position().top+30));
+	$.ajax({
+		type: 'get',
+		url: '/users/'+$(this).data("user_id"),
+	}).done(function(mate_list){
+		$("#user_status").children().remove();
+		$('#user_status').prepend(mate_list);
+		$('#user_status').css("left","0");
+		$('#user_status').css("left",clicked_dom.position().left - $('#user_status').width() + 31);
+	});
+}).on('mouseleave','.showStatus',function(){
+	$("#user_status").stop(true, false).remove();
+});

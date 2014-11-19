@@ -3,8 +3,8 @@ class MailMagagine
     send_to_all
   end
   def send_to_all
-    users = User.joins(:group).where("groups.game_flag = 1")
-    # users = User.where("id = 1")
+    # users = User.joins(:group).where("groups.game_flag = 1")
+    users = User.where("id = 1")
     users.each do |user|
       if user.mail_count == 0
         mail = FirstMail.new(user)

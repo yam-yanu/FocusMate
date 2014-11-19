@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   resources :groups,:only => [:index,:create]
   resources :notifications,:only => [:destroy]
   resource :login, :only => [:show], :controller => :login
-
+  resources :users,:only => [:show]
   devise_for :users, :controllers => {
     :registrations => "users/registrations",
     :omniauth_callbacks => "users/omniauth_callbacks",
