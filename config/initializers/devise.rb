@@ -256,8 +256,8 @@ Devise.setup do |config|
 
   # API key
   if Rails.env.production?
-    config.omniauth :facebook, "1417380501865571", "36941ca4bc50160b3e474aeabf11d454",:locale => "ja_JP"
+    config.omniauth :facebook, "1417380501865571", "b86d1a7936cae2ca51ab873a52ae0456",:locale => "ja_JP"
   else
-    config.omniauth :facebook, "1417380501865571", "36941ca4bc50160b3e474aeabf11d454",:locale => "ja_JP"
+    config.omniauth :facebook, "1417380501865571", "b86d1a7936cae2ca51ab873a52ae0456",:locale => "ja_JP"
   end
 end
