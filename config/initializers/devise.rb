@@ -253,11 +253,9 @@ Devise.setup do |config|
   # When using omniauth, Devise cannot automatically set Omniauth path,
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
+  OmniAuth.config.full_host = 'https://focusmate.dev.com'
 
   # API key
-  if Rails.env.production?
-    config.omniauth :facebook, "1417380501865571", "36941ca4bc50160b3e474aeabf11d454",:locale => "ja_JP"
-  else
-    config.omniauth :facebook, "1417380501865571", "36941ca4bc50160b3e474aeabf11d454",:locale => "ja_JP"
-  end
+  config.omniauth :facebook, ENV['FACEBOOK_APP_ID'], ENV['FACEBOOK_APP_SECRET'], :locale => "ja_JP"
+  config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET']
 end

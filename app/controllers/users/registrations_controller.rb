@@ -5,4 +5,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
     super
   end
 
+  # GET /resource/sign_up
+  def new
+    puts 'hogeho'
+    build_resource({})
+    # puts self.resource
+    respond_with self.resource
+  end
+
 end
